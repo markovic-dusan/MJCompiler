@@ -45,8 +45,6 @@ import java_cup.runtime.Symbol;
 "\r\n" 	{ }
 "\f" 	{ }
 
-// keywords
-
 "program"   { return new_symbol(sym.PROGRAM, yytext());  }
 "break"     { return new_symbol(sym.BREAK, yytext());    }
 "class"     { return new_symbol(sym.CLASS, yytext());    }
@@ -62,7 +60,6 @@ import java_cup.runtime.Symbol;
 "extends"   { return new_symbol(sym.EXTENDS, yytext());  }
 "continue"  { return new_symbol(sym.CONTINUE, yytext()); }
 
-// operators
 
 "+"   { return new_symbol(sym.PLUS, yytext());               }
 "-"   { return new_symbol(sym.MINUS, yytext());              }
@@ -90,23 +87,19 @@ import java_cup.runtime.Symbol;
 "{"   { return new_symbol(sym.LEFT_BRACE, yytext());         }
 "}"   { return new_symbol(sym.RIGHT_BRACE, yytext());        }
 
-// constants
 
 [0-9]+    { return new_symbol(sym.NUMBER, new Integer (yytext())); }
-[x20-x7E] { return new_symbol(sym.CHAR, new Character (yytext())); }
+"\'"[x20-x7E]"\'" { return new_symbol(sym.CHAR, new Character (yytext().charAt(0))); }
 "true"    { return new_symbol(sym.BOOL, new Boolean (true));       }
 "false"   { return new_symbol(sym.BOOL, new Boolean (false));      }
 
-// identifiers
 
 ([a-z]|[A-Z])[a-z|A-Z|0-9|_]* 	{return new_symbol (sym.IDENT, yytext()); }
 
-// comments
 
 "//" 		     { yybegin(COMMENT);   }
 <COMMENT> .      { yybegin(COMMENT);   }
 <COMMENT> "\r\n" { yybegin(YYINITIAL); }
 
-// not paired; error
 
-. { System.err.println("Leksicka greska (" + yytext() + ") u liniji " + (yyline + 1) + " i koloni " + yycolumn); }
+. { System.err.println("Lexical error:  (" + yytext() + ") at line: " + (yyline + 1) + " column: " + yycolumn); }
