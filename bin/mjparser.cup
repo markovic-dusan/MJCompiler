@@ -1,0 +1,68 @@
+
+terminal PROGRAM, IDENT, LEFT_BRACE, RIGHT_BRACE, CONST, COMMA;
+terminal IDENT, ASSIGN, NUMBER, CHAR, BOOL, LEFT_BRACKET, RIGHT_BRACKET;
+terminal CLASS, EXTENDS;
+
+non terminal Program, DeclList, MethodDeclList;
+non terminal SingleDeclaration, ConstDecl, VarDecl, ClassDecl;
+non terminal ConstantsList, SignleConstant, ConstValue;
+non terminal VariablesList, SingleVariable, VariableArrayOption;
+non terminal ExtendsOption, ClassVarDecl, ClassMethodOption;
+non terminal ClassVariablesList, ClassSingleVariable, ClassVariableArrayOption;
+non terminal Type;
+
+Program ::= PROGRAM IDENT DeclList LEFT_BRACE MethodDeclList RIGHT_BRACE;
+
+DeclList ::= DeclList SingleDeclaration
+             |
+             /* epsilon */ ;
+             
+SingleDeclaration ::= ConstDecl
+                      |
+                      VarDecl
+                      |
+                      ClassDecl;
+                      
+ConstDecl ::= CONST Type ConstantsList;
+
+ConstantsList ::= ConstantsList COMMA SignleConstant
+                  |
+                  SingleConstant;
+                  
+SignleConstant ::= IDENT ASSIGN ConstValue;
+
+ConstValue ::= NUMBER
+               |
+               CHAR
+               |
+               BOOL;
+               
+VarDecl ::= Type VariablesList;
+
+VariablesList ::= VariablesList COMMA SingleVariable
+                  |
+                  SingleVariable;
+                  
+SingleVariable ::= IDENT VariableArrayOption;
+
+VariableArrayOption ::= LEFT_BRACKET RIGHT_BRACKET
+                        |
+                        /* epsilon */ ;
+                        
+ClassDecl ::= CLASS IDENT ExtendsOption LEFT_BRACE ClassVarDecl ClassMethodOption RIGHT_BRACE;
+
+ExtendsOption ::= EXTENDS Type
+                  |
+                  /* epsilon */ ;
+                  
+ClassVarDecl ::= Type ClassVariablesList;
+
+ClassVariablesList ::= ClassVariablesList COMMA ClassSingleVariable
+                       |
+                       ClassSingleVariable;
+                       
+ClassSingleVariable ::= IDENT ClassVariableArrayOption;
+
+ClassVariableArrayOption ::= LEFT_BRACKET RIGHT_BRACKET
+                             |
+                             /* epsilon */ ;

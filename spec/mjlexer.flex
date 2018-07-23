@@ -102,4 +102,4 @@ import java_cup.runtime.Symbol;
 <COMMENT> "\r\n" { yybegin(YYINITIAL); }
 
 
-. { System.err.println("Lexical error:  (" + yytext() + ") at line: " + (yyline + 1) + " column: " + yycolumn); }
+. { System.out.println("Lexical error:  (" + yytext() + ") at line: " + (yyline + 1) + " column: " + yycolumn); }
