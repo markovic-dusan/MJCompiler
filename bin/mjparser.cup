@@ -1,68 +1,280 @@
 
-terminal PROGRAM, IDENT, LEFT_BRACE, RIGHT_BRACE, CONST, COMMA;
-terminal IDENT, ASSIGN, NUMBER, CHAR, BOOL, LEFT_BRACKET, RIGHT_BRACKET;
-terminal CLASS, EXTENDS;
+terminal PROGRAM, BREAK, CLASS, INTERFACE, ENUM, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, FOR, EXTENDS, CONTINUE, IMPLEMENTS;
+terminal IDENT;
+terminal NUMBER, CHAR, BOOL;
+terminal PLUS, MINUS, MUL, DIV, MOD;
+terminal EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_EQUALS, LESS_THAN, LESS_THAN_EQUALS;
+terminal AND, OR;
+terminal ASSIGN;
+terminal INC, DEC;
+terminal COMMA, SEMICOLON, PERIOD;
+terminal LEFT_PARENTHESIS, RIGHT_PARENTHESIS, LEFT_BRACKET, RIGHT_BRACKET, LEFT_BRACE, RIGHT_BRACE;
 
-non terminal Program, DeclList, MethodDeclList;
-non terminal SingleDeclaration, ConstDecl, VarDecl, ClassDecl;
-non terminal ConstantsList, SignleConstant, ConstValue;
-non terminal VariablesList, SingleVariable, VariableArrayOption;
-non terminal ExtendsOption, ClassVarDecl, ClassMethodOption;
-non terminal ClassVariablesList, ClassSingleVariable, ClassVariableArrayOption;
+non terminal Program;
+non terminal DeclarationsList, MethodDeclarationList;
+non terminal SingleDeclaration, ConstDecl, VarDecl, ClassDecl, EnumDecl, InterfaceDecl;
+non terminal SingleOrMultipleConstDecl, SingleConstDecl, ConstValue;
+non terminal SingleOrMultipleEnumDecl, SingleEnumDecl, EnumOption;
+non terminal SingleOrMultipleVarDecl, SingleVarDecl, ArrayOption;
+non terminal ExtendsOption, ImplementsOption, VarDeclList, ClassMethodDeclOption;
+non terminal ImplementedInterfacesList, ImplementedInterface, InterfaceMethodDeclarationList;
+non terminal InterfaceMethodDecl, MethodDecl;
+non terminal ReturnType, FormParsOption, StatementList;
+non terminal FormPars, SingleFormPar;
 non terminal Type;
+non terminal Statement, ElseOption, DesignatorStatementOption, ConditionOption, ExprOption, PrintOption;
+non terminal DesignatorStatement, DesignatorStatementOptions, ActParsOption;
+non terminal ActPars, SingleActPar;
+non terminal Condition, CondTerm, CondFact, CondFactOption;
+non terminal Expr, MinusOption, SingleExpr, Term, Factor, FactorDesignatorOption, NewOption;
+non terminal Designator;
+non terminal Assignop, Relop, Addop, Mulop;
 
-Program ::= PROGRAM IDENT DeclList LEFT_BRACE MethodDeclList RIGHT_BRACE;
+Program ::= PROGRAM IDENT DeclarationsList LEFT_BRACE MethodDeclarationList RIGHT_BRACE;
 
-DeclList ::= DeclList SingleDeclaration
-             |
-             /* epsilon */ ;
-             
+DeclarationsList ::= DeclarationsList SingleDeclaration
+                     |
+                     /* epsilon */ ;
+                     
+MethodDeclarationList ::= MethodDeclarationList MethodDecl
+                          |
+                          /* epsilon */ ;
+                     
 SingleDeclaration ::= ConstDecl
                       |
                       VarDecl
                       |
-                      ClassDecl;
+                      ClassDecl
+                      |
+                      EnumDecl
+                      |
+                      InterfaceDecl ;
                       
-ConstDecl ::= CONST Type ConstantsList;
+ConstDecl ::= CONST Type SingleOrMultipleConstDecl SEMICOLON;
 
-ConstantsList ::= ConstantsList COMMA SignleConstant
-                  |
-                  SingleConstant;
-                  
-SignleConstant ::= IDENT ASSIGN ConstValue;
+SingleOrMultipleConstDecl ::= SingleOrMultipleConstDecl COMMA SingleConstDecl
+                              |
+                              SingleConstDecl;
+                              
+SingleConstDecl ::= IDENT ASSIGN ConstValue;
 
 ConstValue ::= NUMBER
                |
                CHAR
                |
-               BOOL;
+               BOOL ;
                
-VarDecl ::= Type VariablesList;
+EnumDecl ::= ENUM IDENT LEFT_BRACE SingleOrMultipleEnumDecl RIGHT_BRACE;
 
-VariablesList ::= VariablesList COMMA SingleVariable
-                  |
-                  SingleVariable;
-                  
-SingleVariable ::= IDENT VariableArrayOption;
+SingleOrMultipleEnumDecl ::= SingleOrMultipleEnumDecl COMMA SingleEnumDecl
+                             |
+                             SingleEnumDecl;
+                             
+SingleEnumDecl ::= IDENT EnumOption;
 
-VariableArrayOption ::= LEFT_BRACKET RIGHT_BRACKET
-                        |
-                        /* epsilon */ ;
-                        
-ClassDecl ::= CLASS IDENT ExtendsOption LEFT_BRACE ClassVarDecl ClassMethodOption RIGHT_BRACE;
+EnumOption ::= ASSIGN NUMBER
+               |
+               /* epsilon */ ;
+               
+VarDecl ::= Type SingleOrMultipleVarDecl SEMICOLON;
+
+SingleOrMultipleVarDecl ::= SingleOrMultipleVarDecl COMMA SingleVarDecl
+                            |
+                            SingleVarDecl;
+                            
+SingleVarDecl ::= IDENT ArrayOption;
+
+ArrayOption ::= LEFT_BRACKET RIGHT_BRACKET
+                |
+                /* epsilon */;
+                
+ClassDecl ::= CLASS IDENT ExtendsOption ImplementsOption LEFT_BRACE VarDeclList ClassMethodDeclOption RIGHT_BRACE;
 
 ExtendsOption ::= EXTENDS Type
                   |
                   /* epsilon */ ;
                   
-ClassVarDecl ::= Type ClassVariablesList;
+ImplementsOption ::= IMPLEMENTS ImplementedInterfacesList
+                     |
+                     /* epsilon */ ;
+                     
+ImplementedInterfacesList ::= ImplementedInterfacesList COMMA ImplementedInterface
+                              |
+                              ImplementedInterface;
+                              
+ImplementedInterface ::= Type;
 
-ClassVariablesList ::= ClassVariablesList COMMA ClassSingleVariable
-                       |
-                       ClassSingleVariable;
-                       
-ClassSingleVariable ::= IDENT ClassVariableArrayOption;
+VarDeclList ::= VarDeclList VarDecl
+                |
+                /* epsilon */;
+                     
+ClassMethodDeclOption ::= LEFT_BRACE MethodDeclarationList RIGHT_BRACE
+                          |
+                          /* epsilon */ ;
+                          
+InterfaceDecl ::= INTERFACE IDENT LEFT_BRACE InterfaceMethodDeclarationList RIGHT_BRACE;
 
-ClassVariableArrayOption ::= LEFT_BRACKET RIGHT_BRACKET
-                             |
-                             /* epsilon */ ;
+InterfaceMethodDeclarationList ::= InterfaceMethodDeclarationList InterfaceMethodDecl
+                                   |
+                                   /* epsilon */;
+                                   
+InterfaceMethodDecl ::= ReturnType IDENT LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS SEMICOLON;
+
+MethodDecl ::= ReturnType IDENT LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS VarDeclList LEFT_BRACE StatementList RIGHT_BRACE;
+
+ReturnType ::= Type
+               |
+               VOID;
+               
+FormParsOption ::= FormPars
+                   |
+                   /* epsilon */;
+                   
+StatementList ::= StatementList Statement
+                  |
+                  /* epsilon */ ;
+                  
+FormPars ::= FormPars COMMA SingleFormPar
+             |
+             SingleFormPar;
+             
+SingleFormPar ::= Type IDENT ArrayOption;
+
+Type ::= IDENT;
+
+Statement ::= DesignatorStatement SEMICOLON
+              |
+              IF LEFT_PARENTHESIS Condition RIGHT_PARENTHESIS Statement ElseOption
+              |
+              FOR LEFT_PARENTHESIS DesignatorStatementOption SEMICOLON ConditionOption SEMICOLON DesignatorStatementOption RIGHT_PARENTHESIS Statement
+              |
+              BREAK SEMICOLON
+              |
+              CONTINUE SEMICOLON
+              |
+              RETURN ExprOption SEMICOLON
+              |
+              READ LEFT_PARENTHESIS Designator RIGHT_PARENTHESIS SEMICOLON
+              |
+              PRINT LEFT_PARENTHESIS Expr PrintOption RIGHT_PARENTHESIS SEMICOLON
+              |
+              LEFT_BRACE StatementList RIGHT_BRACE ;
+              
+ElseOption ::= ELSE Statement
+               |
+               /* epsilon */;
+               
+DesignatorStatementOption ::= DesignatorStatement
+                              |
+                              /* epsilon */ ;
+                              
+ConditionOption ::= Condition
+                    |
+                    /* epsilon */ ;
+                    
+ExprOption ::= Expr
+               |
+               /* epsilon */ ;
+               
+PrintOption ::= COMMA NUMBER
+                |
+                /* epsilon */ ;
+                
+DesignatorStatement ::= Designator DesignatorStatementOptions;
+
+DesignatorStatementOptions ::= Assignop Expr
+                               |
+                               LEFT_PARENTHESIS ActParsOption RIGHT_PARENTHESIS
+                               |
+                               INC
+                               |
+                               DEC ;
+                               
+ActParsOption ::= ActPars
+                  |
+                  /* epsilon */ ;
+                  
+ActPars ::= ActPars COMMA SingleActPar
+            |
+            SingleActPar ;
+            
+SingleActPar ::= Expr ;
+
+Condition ::= Condition OR CondTerm
+              |
+              CondTerm ;
+              
+CondTerm ::= CondTerm AND CondFact
+             |
+             CondFact ;
+             
+CondFact ::= Expr CondFactOption ;
+
+CondFactOption ::= Relop Expr
+                   |
+                   /* epsilon */ ;
+                   
+Expr ::= MinusOption SingleExpr; 
+         
+MinusOption ::= MINUS
+                |
+                /* epsilon */ ;
+                
+SingleExpr ::= SingleExpr Addop Term
+               |
+               Term;
+                
+Term ::= Term Mulop Factor
+         |
+         Factor;
+         
+Factor ::= Designator FactorDesignatorOption
+           |
+           NUMBER
+           |
+           CHAR
+           |
+           BOOL
+           |
+           NEW Type NewOption
+           |
+           LEFT_PARENTHESIS Expr RIGHT_PARENTHESIS
+           ;
+           
+FactorDesignatorOption = LEFT_PARENTHESIS ActParsOption RIGHT_PARENTHESIS
+                         |
+                         /* epsilon */ ;
+                         
+NewOption ::= LEFT_BRACKET Expr RIGHT_BRACKET
+              |
+              /* epsilon */ ;
+              
+Designator ::= Designator PERIOD IDENT
+               |
+               Designator NewOption
+               |
+               IDENT ; 
+               
+Assignop ::= ASSIGN;
+
+Relop ::= EQUALS
+          |
+          NOT_EQUALS
+          |
+          GREATER_THAN
+          |
+          GREATER_THAN_EQUALS
+          |
+          LESS_THAN
+          |
+          LESS_THAN_EQUALS ;
+          
+Addop ::= PLUS
+          |
+          MINUS ;
+          
+Mulop ::= MUL
+          |
+          DIV
+          |
+          MOD ;
