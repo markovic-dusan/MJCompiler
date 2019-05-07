@@ -92,7 +92,7 @@ import java_cup.runtime.Symbol;
 
 
 [0-9]+    { return new_symbol(sym.NUMBER, new Integer (yytext())); }
-"\'"[x20-x7E]"\'" { return new_symbol(sym.CHAR, new Character (yytext().charAt(0))); }
+"\'"[x20-x7E]"\'" { return new_symbol(sym.CHAR, new Character (yytext().charAt(1))); }
 "true"    { return new_symbol(sym.BOOL, new Boolean (true));       }
 "false"   { return new_symbol(sym.BOOL, new Boolean (false));      }
 

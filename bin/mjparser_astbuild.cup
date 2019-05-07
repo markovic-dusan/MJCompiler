@@ -1,0 +1,126 @@
+
+package rs.ac.bg.etf.pp1;
+
+import java_cup.runtime.*;
+import org.apache.log4j.*;
+import rs.ac.bg.etf.pp1.ast.*;
+
+parser code {:
+
+	Logger log = Logger.getLogger(getClass());
+   
+   
+    // redefined error methods
+     
+    public void report_fatal_error(String message, Object info) throws java.lang.Exception {
+      done_parsing();
+      report_error(message, info);
+    }
+  
+    public void syntax_error(Symbol cur_token) {
+        //report_error("Syntax Error", cur_token);
+    }
+  
+    public void unrecovered_syntax_error(Symbol cur_token) throws java.lang.Exception {
+        report_fatal_error("Fatal Error, parsing interrupted", cur_token);
+    }
+
+    public void report_error(String message, Object info) {
+    	StringBuilder msg = new StringBuilder(message); 
+    	if (info != null) {
+    		log.info (info.getClass());
+    		log.info (info);
+		}
+    	if (info instanceof Symbol)
+            msg.append (" on line ").append(((Symbol)info).left);
+        log.error(msg.toString());
+    }
+
+:}
+
+scan with {:
+	
+	Symbol s = this.getScanner().next_token();
+	if (s != null && s.value != null) 
+		log.info(s.toString() + " " + s.value.toString());
+	return s;
+	
+:}
+
+terminal PROGRAM, BREAK, CONST, CLASS, EXTENDS, IMPLEMENTS, ENUM, INTERFACE, IF, ELSE, FOR, NEW, PRINT, READ, RETURN, VOID, CONTINUE;
+terminal String IDENT;
+terminal Integer NUMBER;
+terminal Character CHAR;
+terminal Boolean BOOL;
+terminal PLUS, MINUS, MUL, DIV, MOD;
+terminal EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_EQUALS, LESS_THAN, LESS_THAN_EQUALS;
+terminal AND, OR, ASSIGN, INC, DEC;
+terminal SEMICOLON, COMMA, PERIOD;
+terminal LEFT_BRACE, RIGHT_BRACE, LEFT_BRACKET, RIGHT_BRACKET, LEFT_PARENTHESIS, RIGHT_PARENTHESIS;
+
+non terminal Program Program;
+nonterminal DeclarationsList DeclarationsList;
+nonterminal Decl Decl;
+nonterminal MethodDeclarationsList MethodDeclarationsList;
+non terminal ClassDecl ClassDecl;
+nonterminal EnumDecl EnumDecl;
+nonterminal InterfaceDecl InterfaceDecl;
+non terminal ConstDecl ConstDecl;
+nonterminal ConstSyntaxCheck ConstSyntaxCheck;
+nonterminal MultipleConstDecl MultipleConstDecl;
+nonterminal SingleConstDecl SingleConstDecl;
+nonterminal SingleConstDeclSyntaxCheck SingleConstDeclSyntaxCheck;
+nonterminal ConstValue ConstValue;
+non terminal VarDecl VarDecl;
+nonterminal MultipleVarDecl MultipleVarDecl;
+non terminal MethodDecl MethodDecl;
+non terminal Type Type;
+
+Program ::= (Program) PROGRAM IDENT:programName DeclarationsList:D1 LEFT_BRACE MethodDeclarationsList:M2 RIGHT_BRACE {: RESULT=new Program(programName, D1, M2); RESULT.setLine(programNameleft); :} ;
+
+DeclarationsList ::= (GlobalDeclarations) DeclarationsList:D1 Decl:D2 {: RESULT=new GlobalDeclarations(D1, D2); RESULT.setLine(D1left); :}
+                     |
+                     (NoGlobalDeclarations) {: RESULT=new NoGlobalDeclarations(); :} /* epsilon */ ;
+
+Decl ::= (ConstDeclaration) ConstDecl:C1 {: RESULT=new ConstDeclaration(C1); RESULT.setLine(C1left); :}
+         |
+         (GlobalVariableDeclaration) VarDecl:V1 {: RESULT=new GlobalVariableDeclaration(V1); RESULT.setLine(V1left); :}
+         | 
+         (ClassDeclaration) ClassDecl:C1 {: RESULT=new ClassDeclaration(C1); RESULT.setLine(C1left); :}
+         | 
+         (EnumDeclaration) EnumDecl:E1 {: RESULT=new EnumDeclaration(E1); RESULT.setLine(E1left); :} 
+         | 
+         (InterfaceDeclaration) InterfaceDecl:I1 {: RESULT=new InterfaceDeclaration(I1); RESULT.setLine(I1left); :} ;
+                     
+MethodDeclarationsList ::= (GlobalMethodsDeclarations) MethodDeclarationsList:M1 MethodDecl:M2 {: RESULT=new GlobalMethodsDeclarations(M1, M2); RESULT.setLine(M1left); :}
+                           |
+                           (NoGlobalMethodsDeclarations) {: RESULT=new NoGlobalMethodsDeclarations(); :} /* epsilon */ ;                           
+
+         
+ConstDecl ::= (ConstDecl) CONST ConstSyntaxCheck:C1 SEMICOLON {: RESULT=new ConstDecl(C1); RESULT.setLine(C1left); :} ; 
+
+ConstSyntaxCheck ::= (ConstDeclSuccess) Type:constType MultipleConstDecl:M1 {: RESULT=new ConstDeclSuccess(constType, M1); RESULT.setLine(constTypeleft); :}
+                     |
+                     (ConstDeclError) error:e 
+                     {: parser.report_error("1Syntax Error on line " + eleft + "; error in constant declaration", null); :} {: RESULT=new ConstDeclError(); :}  ;
+
+MultipleConstDecl ::= (MultipleConstDeclaration) MultipleConstDecl:M1 COMMA SingleConstDecl:S2 {: RESULT=new MultipleConstDeclaration(M1, S2); RESULT.setLine(M1left); :}
+                      |
+                      (SingleConstDeclaration) SingleConstDecl:S1 {: RESULT=new SingleConstDeclaration(S1); RESULT.setLine(S1left); :} ;
+                      
+SingleConstDecl ::= (SingleConstDecl) SingleConstDeclSyntaxCheck:S1 {: RESULT=new SingleConstDecl(S1); RESULT.setLine(S1left); :}; 
+
+SingleConstDeclSyntaxCheck ::= (SingleConstDeclSuccess) IDENT:constName ASSIGN ConstValue:constValue {: RESULT=new SingleConstDeclSuccess(constName, constValue); RESULT.setLine(constNameleft); :}
+                               |
+                               (SingleConstDeclError) error:e
+                               {: parser.report_error("2Syntax Error on line " + eleft + "; error in constant declaration", null); :} {: RESULT=new SingleConstDeclError(); :} ;
+
+ConstValue ::= (NumConst) NUMBER:numberValue {: RESULT=new NumConst(numberValue); RESULT.setLine(numberValueleft); :}
+               |
+               (CharConst) CHAR:charValue {: RESULT=new CharConst(charValue); RESULT.setLine(charValueleft); :}
+               |
+               (BoolConst) BOOL:boolValue {: RESULT=new BoolConst(boolValue); RESULT.setLine(boolValueleft); :} ;
+               
+VarDecl ::= (VarDecl) Type:varType MultipleVarDecl:M1 SEMICOLON {: RESULT=new VarDecl(varType, M1); RESULT.setLine(varTypeleft); :} ;
+               
+Type ::= (Type) IDENT:typeName {: RESULT=new Type(typeName); RESULT.setLine(typeNameleft); :} ;

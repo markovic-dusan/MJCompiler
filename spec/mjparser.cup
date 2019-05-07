@@ -1,280 +1,115 @@
 
-terminal PROGRAM, BREAK, CLASS, INTERFACE, ENUM, ELSE, CONST, IF, NEW, PRINT, READ, RETURN, VOID, FOR, EXTENDS, CONTINUE, IMPLEMENTS;
-terminal IDENT;
-terminal NUMBER, CHAR, BOOL;
+package rs.ac.bg.etf.pp1;
+
+import java_cup.runtime.*;
+import org.apache.log4j.*;
+import rs.ac.bg.etf.pp1.ast.*;
+
+parser code {:
+
+	Logger log = Logger.getLogger(getClass());
+   
+   
+    // redefined error methods
+     
+    public void report_fatal_error(String message, Object info) throws java.lang.Exception {
+      done_parsing();
+      report_error(message, info);
+    }
+  
+    public void syntax_error(Symbol cur_token) {
+        //report_error("Syntax Error", cur_token);
+    }
+  
+    public void unrecovered_syntax_error(Symbol cur_token) throws java.lang.Exception {
+        report_fatal_error("Fatal Error, parsing interrupted", cur_token);
+    }
+
+    public void report_error(String message, Object info) {
+    	StringBuilder msg = new StringBuilder(message); 
+    	if (info != null) {
+    		log.info (info.getClass());
+    		log.info (info);
+		}
+    	if (info instanceof Symbol)
+            msg.append (" on line ").append(((Symbol)info).left);
+        log.error(msg.toString());
+    }
+
+:}
+
+scan with {:
+	
+	Symbol s = this.getScanner().next_token();
+	if (s != null && s.value != null) 
+		log.info(s.toString() + " " + s.value.toString());
+	return s;
+	
+:}
+
+terminal PROGRAM, BREAK, CONST, CLASS, EXTENDS, IMPLEMENTS, ENUM, INTERFACE, IF, ELSE, FOR, NEW, PRINT, READ, RETURN, VOID, CONTINUE;
+terminal String IDENT;
+terminal Integer NUMBER;
+terminal Character CHAR;
+terminal Boolean BOOL;
 terminal PLUS, MINUS, MUL, DIV, MOD;
 terminal EQUALS, NOT_EQUALS, GREATER_THAN, GREATER_THAN_EQUALS, LESS_THAN, LESS_THAN_EQUALS;
-terminal AND, OR;
-terminal ASSIGN;
-terminal INC, DEC;
-terminal COMMA, SEMICOLON, PERIOD;
-terminal LEFT_PARENTHESIS, RIGHT_PARENTHESIS, LEFT_BRACKET, RIGHT_BRACKET, LEFT_BRACE, RIGHT_BRACE;
+terminal AND, OR, ASSIGN, INC, DEC;
+terminal SEMICOLON, COMMA, PERIOD;
+terminal LEFT_BRACE, RIGHT_BRACE, LEFT_BRACKET, RIGHT_BRACKET, LEFT_PARENTHESIS, RIGHT_PARENTHESIS;
 
-non terminal Program;
-non terminal DeclarationsList, MethodDeclarationList;
-non terminal SingleDeclaration, ConstDecl, VarDecl, ClassDecl, EnumDecl, InterfaceDecl;
-non terminal SingleOrMultipleConstDecl, SingleConstDecl, ConstValue;
-non terminal SingleOrMultipleEnumDecl, SingleEnumDecl, EnumOption;
-non terminal SingleOrMultipleVarDecl, SingleVarDecl, ArrayOption;
-non terminal ExtendsOption, ImplementsOption, VarDeclList, ClassMethodDeclOption;
-non terminal ImplementedInterfacesList, ImplementedInterface, InterfaceMethodDeclarationList;
-non terminal InterfaceMethodDecl, MethodDecl;
-non terminal ReturnType, FormParsOption, StatementList;
-non terminal FormPars, SingleFormPar;
+non terminal Program, DeclarationsList, Decl, MethodDeclarationsList;
+non terminal ClassDecl, EnumDecl, InterfaceDecl;
+non terminal ConstDecl, ConstSyntaxCheck, MultipleConstDecl, SingleConstDecl, SingleConstDeclSyntaxCheck, ConstValue;
+non terminal VarDecl, MultipleVarDecl;
+non terminal MethodDecl;
 non terminal Type;
-non terminal Statement, ElseOption, DesignatorStatementOption, ConditionOption, ExprOption, PrintOption;
-non terminal DesignatorStatement, DesignatorStatementOptions, ActParsOption;
-non terminal ActPars, SingleActPar;
-non terminal Condition, CondTerm, CondFact, CondFactOption;
-non terminal Expr, MinusOption, SingleExpr, Term, Factor, FactorDesignatorOption, NewOption;
-non terminal Designator;
-non terminal Assignop, Relop, Addop, Mulop;
 
-Program ::= PROGRAM IDENT DeclarationsList LEFT_BRACE MethodDeclarationList RIGHT_BRACE;
+Program ::= (Program) PROGRAM IDENT:programName DeclarationsList LEFT_BRACE MethodDeclarationsList RIGHT_BRACE ;
 
-DeclarationsList ::= DeclarationsList SingleDeclaration
+DeclarationsList ::= (GlobalDeclarations) DeclarationsList Decl
                      |
-                     /* epsilon */ ;
-                     
-MethodDeclarationList ::= MethodDeclarationList MethodDecl
-                          |
-                          /* epsilon */ ;
-                     
-SingleDeclaration ::= ConstDecl
-                      |
-                      VarDecl
-                      |
-                      ClassDecl
-                      |
-                      EnumDecl
-                      |
-                      InterfaceDecl ;
-                      
-ConstDecl ::= CONST Type SingleOrMultipleConstDecl SEMICOLON;
+                     (NoGlobalDeclarations) /* epsilon */ ;
 
-SingleOrMultipleConstDecl ::= SingleOrMultipleConstDecl COMMA SingleConstDecl
-                              |
-                              SingleConstDecl;
-                              
-SingleConstDecl ::= IDENT ASSIGN ConstValue;
-
-ConstValue ::= NUMBER
-               |
-               CHAR
-               |
-               BOOL ;
-               
-EnumDecl ::= ENUM IDENT LEFT_BRACE SingleOrMultipleEnumDecl RIGHT_BRACE;
-
-SingleOrMultipleEnumDecl ::= SingleOrMultipleEnumDecl COMMA SingleEnumDecl
-                             |
-                             SingleEnumDecl;
-                             
-SingleEnumDecl ::= IDENT EnumOption;
-
-EnumOption ::= ASSIGN NUMBER
-               |
-               /* epsilon */ ;
-               
-VarDecl ::= Type SingleOrMultipleVarDecl SEMICOLON;
-
-SingleOrMultipleVarDecl ::= SingleOrMultipleVarDecl COMMA SingleVarDecl
-                            |
-                            SingleVarDecl;
-                            
-SingleVarDecl ::= IDENT ArrayOption;
-
-ArrayOption ::= LEFT_BRACKET RIGHT_BRACKET
-                |
-                /* epsilon */;
-                
-ClassDecl ::= CLASS IDENT ExtendsOption ImplementsOption LEFT_BRACE VarDeclList ClassMethodDeclOption RIGHT_BRACE;
-
-ExtendsOption ::= EXTENDS Type
-                  |
-                  /* epsilon */ ;
-                  
-ImplementsOption ::= IMPLEMENTS ImplementedInterfacesList
-                     |
-                     /* epsilon */ ;
-                     
-ImplementedInterfacesList ::= ImplementedInterfacesList COMMA ImplementedInterface
-                              |
-                              ImplementedInterface;
-                              
-ImplementedInterface ::= Type;
-
-VarDeclList ::= VarDeclList VarDecl
-                |
-                /* epsilon */;
-                     
-ClassMethodDeclOption ::= LEFT_BRACE MethodDeclarationList RIGHT_BRACE
-                          |
-                          /* epsilon */ ;
-                          
-InterfaceDecl ::= INTERFACE IDENT LEFT_BRACE InterfaceMethodDeclarationList RIGHT_BRACE;
-
-InterfaceMethodDeclarationList ::= InterfaceMethodDeclarationList InterfaceMethodDecl
-                                   |
-                                   /* epsilon */;
-                                   
-InterfaceMethodDecl ::= ReturnType IDENT LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS SEMICOLON;
-
-MethodDecl ::= ReturnType IDENT LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS VarDeclList LEFT_BRACE StatementList RIGHT_BRACE;
-
-ReturnType ::= Type
-               |
-               VOID;
-               
-FormParsOption ::= FormPars
-                   |
-                   /* epsilon */;
-                   
-StatementList ::= StatementList Statement
-                  |
-                  /* epsilon */ ;
-                  
-FormPars ::= FormPars COMMA SingleFormPar
-             |
-             SingleFormPar;
-             
-SingleFormPar ::= Type IDENT ArrayOption;
-
-Type ::= IDENT;
-
-Statement ::= DesignatorStatement SEMICOLON
-              |
-              IF LEFT_PARENTHESIS Condition RIGHT_PARENTHESIS Statement ElseOption
-              |
-              FOR LEFT_PARENTHESIS DesignatorStatementOption SEMICOLON ConditionOption SEMICOLON DesignatorStatementOption RIGHT_PARENTHESIS Statement
-              |
-              BREAK SEMICOLON
-              |
-              CONTINUE SEMICOLON
-              |
-              RETURN ExprOption SEMICOLON
-              |
-              READ LEFT_PARENTHESIS Designator RIGHT_PARENTHESIS SEMICOLON
-              |
-              PRINT LEFT_PARENTHESIS Expr PrintOption RIGHT_PARENTHESIS SEMICOLON
-              |
-              LEFT_BRACE StatementList RIGHT_BRACE ;
-              
-ElseOption ::= ELSE Statement
-               |
-               /* epsilon */;
-               
-DesignatorStatementOption ::= DesignatorStatement
-                              |
-                              /* epsilon */ ;
-                              
-ConditionOption ::= Condition
-                    |
-                    /* epsilon */ ;
-                    
-ExprOption ::= Expr
-               |
-               /* epsilon */ ;
-               
-PrintOption ::= COMMA NUMBER
-                |
-                /* epsilon */ ;
-                
-DesignatorStatement ::= Designator DesignatorStatementOptions;
-
-DesignatorStatementOptions ::= Assignop Expr
-                               |
-                               LEFT_PARENTHESIS ActParsOption RIGHT_PARENTHESIS
-                               |
-                               INC
-                               |
-                               DEC ;
-                               
-ActParsOption ::= ActPars
-                  |
-                  /* epsilon */ ;
-                  
-ActPars ::= ActPars COMMA SingleActPar
-            |
-            SingleActPar ;
-            
-SingleActPar ::= Expr ;
-
-Condition ::= Condition OR CondTerm
-              |
-              CondTerm ;
-              
-CondTerm ::= CondTerm AND CondFact
-             |
-             CondFact ;
-             
-CondFact ::= Expr CondFactOption ;
-
-CondFactOption ::= Relop Expr
-                   |
-                   /* epsilon */ ;
-                   
-Expr ::= MinusOption SingleExpr; 
-         
-MinusOption ::= MINUS
-                |
-                /* epsilon */ ;
-                
-SingleExpr ::= SingleExpr Addop Term
-               |
-               Term;
-                
-Term ::= Term Mulop Factor
+Decl ::= (ConstDeclaration) ConstDecl
          |
-         Factor;
-         
-Factor ::= Designator FactorDesignatorOption
-           |
-           NUMBER
-           |
-           CHAR
-           |
-           BOOL
-           |
-           NEW Type NewOption
-           |
-           LEFT_PARENTHESIS Expr RIGHT_PARENTHESIS
-           ;
-           
-FactorDesignatorOption = LEFT_PARENTHESIS ActParsOption RIGHT_PARENTHESIS
-                         |
-                         /* epsilon */ ;
-                         
-NewOption ::= LEFT_BRACKET Expr RIGHT_BRACKET
-              |
-              /* epsilon */ ;
-              
-Designator ::= Designator PERIOD IDENT
-               |
-               Designator NewOption
-               |
-               IDENT ; 
-               
-Assignop ::= ASSIGN;
+         (GlobalVariableDeclaration) VarDecl
+         | 
+         (ClassDeclaration) ClassDecl
+         | 
+         (EnumDeclaration) EnumDecl 
+         | 
+         (InterfaceDeclaration) InterfaceDecl ;
+                     
+MethodDeclarationsList ::= (GlobalMethodsDeclarations) MethodDeclarationsList MethodDecl
+                           |
+                           (NoGlobalMethodsDeclarations) /* epsilon */ ;                           
 
-Relop ::= EQUALS
-          |
-          NOT_EQUALS
-          |
-          GREATER_THAN
-          |
-          GREATER_THAN_EQUALS
-          |
-          LESS_THAN
-          |
-          LESS_THAN_EQUALS ;
-          
-Addop ::= PLUS
-          |
-          MINUS ;
-          
-Mulop ::= MUL
-          |
-          DIV
-          |
-          MOD ;
+         
+ConstDecl ::= (ConstDecl) CONST ConstSyntaxCheck SEMICOLON ; 
+
+ConstSyntaxCheck ::= (ConstDeclSuccess) Type:constType MultipleConstDecl
+                     |
+                     (ConstDeclError) error:e 
+                     {: parser.report_error("1Syntax Error on line " + eleft + "; error in constant declaration", null); :}  ;
+
+MultipleConstDecl ::= (MultipleConstDeclaration) MultipleConstDecl COMMA SingleConstDecl
+                      |
+                      (SingleConstDeclaration) SingleConstDecl ;
+                      
+SingleConstDecl ::= (SingleConstDecl) SingleConstDeclSyntaxCheck; 
+
+SingleConstDeclSyntaxCheck ::= (SingleConstDeclSuccess) IDENT:constName ASSIGN ConstValue:constValue
+                               |
+                               (SingleConstDeclError) error:e
+                               {: parser.report_error("2Syntax Error on line " + eleft + "; error in constant declaration", null); :} ;
+
+ConstValue ::= (NumConst) NUMBER:numberValue
+               |
+               (CharConst) CHAR:charValue
+               |
+               (BoolConst) BOOL:boolValue ;
+               
+VarDecl ::= (VarDecl) Type:varType MultipleVarDecl SEMICOLON ;
+               
+Type ::= (Type) IDENT:typeName ;
