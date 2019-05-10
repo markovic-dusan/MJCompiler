@@ -1,9 +1,12 @@
 program prog 
 
-const int a  2, e = 4;
-const char c =, f = true ;
-const b = 2, d = 3 ;
-
+class klasa {
+	{
+		void metod1 () int a; {
+		    return;
+		}
+	}
+}
 {
 	
 }

@@ -1,0 +1,14 @@
+program NeuspesanProgramSintaksaNivoA
+
+// deklaracija konstante
+const int c = ; // nedostatak vrednosti konstante
+const int c1; // isto
+const cc = 'a', ccc = 'b'; // nedostatak tipa konstante
+const bool b = , bb = true; // jedna neuspesna, jedna uspesna
+
+// deklaracija nabrajanja
+enum enumeration1 { PRVI, PETI = 5 SESTI, SEDMI } // nedostatak zareza
+enum enumeration2  PRVI, PETI = 5, SESTI, SEDMI } // nedostatak {
+enum { PRVI, PETI = 5, SESTI, SEDMI } // nedostatak imena
+{
+}

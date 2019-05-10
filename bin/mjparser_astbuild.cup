@@ -8,7 +8,8 @@ import rs.ac.bg.etf.pp1.ast.*;
 parser code {:
 
 	Logger log = Logger.getLogger(getClass());
-   
+	
+	Boolean syntaxErrorFound = false;   
    
     // redefined error methods
      
@@ -41,8 +42,8 @@ parser code {:
 scan with {:
 	
 	Symbol s = this.getScanner().next_token();
-	if (s != null && s.value != null) 
-		log.info(s.toString() + " " + s.value.toString());
+	/*if (s != null && s.value != null) 
+		log.info(s.toString() + " " + s.value.toString()); */
 	return s;
 	
 :}
@@ -59,24 +60,100 @@ terminal SEMICOLON, COMMA, PERIOD;
 terminal LEFT_BRACE, RIGHT_BRACE, LEFT_BRACKET, RIGHT_BRACKET, LEFT_PARENTHESIS, RIGHT_PARENTHESIS;
 
 non terminal Program Program;
+nonterminal ProgramName ProgramName;
 nonterminal DeclarationsList DeclarationsList;
 nonterminal Decl Decl;
 nonterminal MethodDeclarationsList MethodDeclarationsList;
-non terminal ClassDecl ClassDecl;
-nonterminal EnumDecl EnumDecl;
-nonterminal InterfaceDecl InterfaceDecl;
 non terminal ConstDecl ConstDecl;
 nonterminal ConstSyntaxCheck ConstSyntaxCheck;
 nonterminal MultipleConstDecl MultipleConstDecl;
 nonterminal SingleConstDecl SingleConstDecl;
 nonterminal SingleConstDeclSyntaxCheck SingleConstDeclSyntaxCheck;
+nonterminal ConstName ConstName;
 nonterminal ConstValue ConstValue;
+non terminal EnumDecl EnumDecl;
+nonterminal EnumSyntaxCheck EnumSyntaxCheck;
+nonterminal EnumName EnumName;
+nonterminal MultipleEnumElemDecl MultipleEnumElemDecl;
+nonterminal SingleEnumElemDecl SingleEnumElemDecl;
+nonterminal SingleEnumElemDeclSyntaxCheck SingleEnumElemDeclSyntaxCheck;
+nonterminal EnumValueOption EnumValueOption;
 non terminal VarDecl VarDecl;
+nonterminal VarSyntaxCheck VarSyntaxCheck;
 nonterminal MultipleVarDecl MultipleVarDecl;
+nonterminal SingleVarDeclSyntaxCheck SingleVarDeclSyntaxCheck;
+nonterminal SingleVarDecl SingleVarDecl;
+nonterminal ArrayOption ArrayOption;
+non terminal ClassDecl ClassDecl;
+nonterminal ExtendsOption ExtendsOption;
+nonterminal ExtendsSyntaxCheck ExtendsSyntaxCheck;
+nonterminal ImplementsOption ImplementsOption;
+nonterminal ImplementsSyntaxCheck ImplementsSyntaxCheck;
+nonterminal InterfaceList InterfaceList;
+nonterminal InterfaceImplemented InterfaceImplemented;
+non terminal ClassVarDeclList ClassVarDeclList;
+nonterminal ClassVarDeclSyntaxCheck ClassVarDeclSyntaxCheck;
+nonterminal ClassVarDeclCheck ClassVarDeclCheck;
+nonterminal MultipleClassVarDecl MultipleClassVarDecl;
+nonterminal SingleClassVarDecl SingleClassVarDecl;
+nonterminal ClassVarArrayOption ClassVarArrayOption;
+non terminal ClassMethodsOption ClassMethodsOption;
+nonterminal ClassMethodDeclarationsList ClassMethodDeclarationsList;
+nonterminal ClassMethodDecl ClassMethodDecl;
+nonterminal ClassMethodVarDeclList ClassMethodVarDeclList;
+nonterminal ClassMethodVarDeclSyntaxCheck ClassMethodVarDeclSyntaxCheck;
+nonterminal ClassMethodVarDeclCheck ClassMethodVarDeclCheck;
+nonterminal MultipleClassMethodVarDecl MultipleClassMethodVarDecl;
+nonterminal SingleClassMethodVarDecl SingleClassMethodVarDecl;
+nonterminal ClassMethodVarArrayOption ClassMethodVarArrayOption;
+non terminal InterfaceDecl InterfaceDecl;
+nonterminal InterfaceSyntaxCheck InterfaceSyntaxCheck;
+nonterminal InterfaceMethodDeclarationList InterfaceMethodDeclarationList;
+non terminal InterfaceMethodDecl InterfaceMethodDecl;
+nonterminal ReturnType ReturnType;
+nonterminal FormParsOption FormParsOption;
 non terminal MethodDecl MethodDecl;
+nonterminal MethodVarDeclList MethodVarDeclList;
+nonterminal MethodVarDeclSyntaxCheck MethodVarDeclSyntaxCheck;
+nonterminal MethodVarDeclCheck MethodVarDeclCheck;
+nonterminal MultipleMethodVarDecl MultipleMethodVarDecl;
+nonterminal SingleMethodVarDecl SingleMethodVarDecl;
+nonterminal MethodVarArrayOption MethodVarArrayOption;
+nonterminal StatementList StatementList;
 non terminal Type Type;
+non terminal FormPars FormPars;
+nonterminal SingleFormPar SingleFormPar;
+nonterminal FormParArrayOption FormParArrayOption;
+non terminal Statement Statement;
+nonterminal MatchedStatement MatchedStatement;
+nonterminal UnmatchedStatement UnmatchedStatement;
+nonterminal MatchedDesignatorStatement MatchedDesignatorStatement;
+nonterminal ConditionSyntaxCheck ConditionSyntaxCheck;
+nonterminal FirstForDesignatorOption FirstForDesignatorOption;
+nonterminal ForConditionOption ForConditionOption;
+nonterminal SecondForDesignatorOption SecondForDesignatorOption;
+nonterminal ReturnExprOption ReturnExprOption;
+nonterminal PrintOption PrintOption;
+non terminal DesignatorStatement DesignatorStatement;
+nonterminal ActParamsOption ActParamsOption;
+non terminal ActPars ActPars;
+non terminal Condition Condition;
+non terminal CondTerm CondTerm;
+non terminal CondFact CondFact;
+non terminal Expr Expr;
+nonterminal MinusOption MinusOption;
+nonterminal Expression Expression;
+non terminal Term Term;
+non terminal Factor Factor;
+non terminal Designator Designator;
+non terminal Assignop Assignop;
+non terminal Relop Relop;
+non terminal Addop Addop;
+non terminal Mulop Mulop;
 
-Program ::= (Program) PROGRAM IDENT:programName DeclarationsList:D1 LEFT_BRACE MethodDeclarationsList:M2 RIGHT_BRACE {: RESULT=new Program(programName, D1, M2); RESULT.setLine(programNameleft); :} ;
+Program ::= (Program) PROGRAM ProgramName:P1 DeclarationsList:D2 LEFT_BRACE MethodDeclarationsList:M3 RIGHT_BRACE {: RESULT=new Program(P1, D2, M3); RESULT.setLine(P1left); :} ;
+
+ProgramName ::= (ProgramName) IDENT:programName {: RESULT=new ProgramName(programName); RESULT.setLine(programNameleft); :} ;
 
 DeclarationsList ::= (GlobalDeclarations) DeclarationsList:D1 Decl:D2 {: RESULT=new GlobalDeclarations(D1, D2); RESULT.setLine(D1left); :}
                      |
@@ -102,7 +179,7 @@ ConstDecl ::= (ConstDecl) CONST ConstSyntaxCheck:C1 SEMICOLON {: RESULT=new Cons
 ConstSyntaxCheck ::= (ConstDeclSuccess) Type:constType MultipleConstDecl:M1 {: RESULT=new ConstDeclSuccess(constType, M1); RESULT.setLine(constTypeleft); :}
                      |
                      (ConstDeclError) error:e 
-                     {: parser.report_error("1Syntax Error on line " + eleft + "; error in constant declaration", null); :} {: RESULT=new ConstDeclError(); :}  ;
+                     {: parser.report_error("1Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new ConstDeclError(); :}  ;
 
 MultipleConstDecl ::= (MultipleConstDeclaration) MultipleConstDecl:M1 COMMA SingleConstDecl:S2 {: RESULT=new MultipleConstDeclaration(M1, S2); RESULT.setLine(M1left); :}
                       |
@@ -110,10 +187,12 @@ MultipleConstDecl ::= (MultipleConstDeclaration) MultipleConstDecl:M1 COMMA Sing
                       
 SingleConstDecl ::= (SingleConstDecl) SingleConstDeclSyntaxCheck:S1 {: RESULT=new SingleConstDecl(S1); RESULT.setLine(S1left); :}; 
 
-SingleConstDeclSyntaxCheck ::= (SingleConstDeclSuccess) IDENT:constName ASSIGN ConstValue:constValue {: RESULT=new SingleConstDeclSuccess(constName, constValue); RESULT.setLine(constNameleft); :}
+SingleConstDeclSyntaxCheck ::= (SingleConstDeclSuccess) ConstName:constName ASSIGN ConstValue:constValue {: RESULT=new SingleConstDeclSuccess(constName, constValue); RESULT.setLine(constNameleft); :}
                                |
                                (SingleConstDeclError) error:e
-                               {: parser.report_error("2Syntax Error on line " + eleft + "; error in constant declaration", null); :} {: RESULT=new SingleConstDeclError(); :} ;
+                               {: parser.report_error("2Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new SingleConstDeclError(); :} ;
+
+ConstName ::= (ConstName) IDENT:constName {: RESULT=new ConstName(constName); RESULT.setLine(constNameleft); :} ;
 
 ConstValue ::= (NumConst) NUMBER:numberValue {: RESULT=new NumConst(numberValue); RESULT.setLine(numberValueleft); :}
                |
@@ -121,6 +200,233 @@ ConstValue ::= (NumConst) NUMBER:numberValue {: RESULT=new NumConst(numberValue)
                |
                (BoolConst) BOOL:boolValue {: RESULT=new BoolConst(boolValue); RESULT.setLine(boolValueleft); :} ;
                
-VarDecl ::= (VarDecl) Type:varType MultipleVarDecl:M1 SEMICOLON {: RESULT=new VarDecl(varType, M1); RESULT.setLine(varTypeleft); :} ;
+EnumDecl ::= (EnumDecl) ENUM EnumSyntaxCheck:E1 RIGHT_BRACE {: RESULT=new EnumDecl(E1); RESULT.setLine(E1left); :} ;
+
+EnumSyntaxCheck ::= (EnumDeclSuccess) EnumName:E1 LEFT_BRACE MultipleEnumElemDecl:M2 {: RESULT=new EnumDeclSuccess(E1, M2); RESULT.setLine(E1left); :} 
+                    |
+                    (EnumDeclError) error:e
+                    {: parser.report_error("5Syntax Error on line " + eleft + "; error in enum declaration", null);  parser.syntaxErrorFound = true; :} {: RESULT=new EnumDeclError(); :}  ;
+                    
+EnumName ::= (EnumName) IDENT:enumName {: RESULT=new EnumName(enumName); RESULT.setLine(enumNameleft); :} ;
+                    
+MultipleEnumElemDecl ::= (MultipleEnumElemDeclaration) MultipleEnumElemDecl:M1 COMMA SingleEnumElemDecl:S2 {: RESULT=new MultipleEnumElemDeclaration(M1, S2); RESULT.setLine(M1left); :}
+                         |
+                         (SingleEnumElemDeclaration) SingleEnumElemDecl:S1 {: RESULT=new SingleEnumElemDeclaration(S1); RESULT.setLine(S1left); :} ;
+                         
+SingleEnumElemDecl ::= (SingleEnumElemDecl) SingleEnumElemDeclSyntaxCheck:S1 {: RESULT=new SingleEnumElemDecl(S1); RESULT.setLine(S1left); :};
+
+SingleEnumElemDeclSyntaxCheck ::= (SingleEnumElemDeclSuccess) IDENT:enumElemName EnumValueOption:E1 {: RESULT=new SingleEnumElemDeclSuccess(enumElemName, E1); RESULT.setLine(enumElemNameleft); :}
+                                  |
+                                  (SingleEnumElemDeclError) error:e 
+                                  {: parser.report_error("6Syntax Error on line " + eleft + "; error in enum declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new SingleEnumElemDeclError(); :} ;
+
+EnumValueOption ::= (EnumElemValue) ASSIGN NUMBER:enumValue {: RESULT=new EnumElemValue(enumValue); RESULT.setLine(enumValueleft); :}
+                    |
+                    (NoEnumElemValue) {: RESULT=new NoEnumElemValue(); :} /* epsilon */ ;
+VarDecl ::= (VarDecl) VarSyntaxCheck:V1 SEMICOLON {: RESULT=new VarDecl(V1); RESULT.setLine(V1left); :} ;               
+
+VarSyntaxCheck ::= (VarDeclSuccess) Type:varType MultipleVarDecl:M1 {: RESULT=new VarDeclSuccess(varType, M1); RESULT.setLine(varTypeleft); :} 
+                   |
+                   (VarDeclError) error:e
+                   {: parser.report_error("3Syntax Error on line " + eleft + "; error in variable declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new VarDeclError(); :} ;
+
+MultipleVarDecl ::= (MultipleVarDeclaration) MultipleVarDecl:M1 COMMA SingleVarDecl:S2 {: RESULT=new MultipleVarDeclaration(M1, S2); RESULT.setLine(M1left); :}
+                    |
+                    (SingleVarDeclaration) SingleVarDecl:S1 {: RESULT=new SingleVarDeclaration(S1); RESULT.setLine(S1left); :} ;
+                    
+SingleVarDecl ::= (SingleVarDecl) SingleVarDeclSyntaxCheck:S1 {: RESULT=new SingleVarDecl(S1); RESULT.setLine(S1left); :}; 
+
+SingleVarDeclSyntaxCheck ::= (SingleVarDeclSuccess) IDENT:varName ArrayOption:A1 {: RESULT=new SingleVarDeclSuccess(varName, A1); RESULT.setLine(varNameleft); :}
+                             |
+                             (SingleVarDeclError) error:e
+                             {: parser.report_error("4Syntax Error on line " + eleft + "; error in variable declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new SingleVarDeclError(); :} ;
+
+ArrayOption ::= (ArrayVariable) LEFT_BRACKET RIGHT_BRACKET {: RESULT=new ArrayVariable(); :}
+                |
+                (NoArrayVariable) {: RESULT=new NoArrayVariable(); :} /* epsilon */ ;
+                
+ClassDecl ::= (ClassDecl) CLASS IDENT:className ExtendsOption:E1 ImplementsOption:I2 LEFT_BRACE ClassVarDeclList:C3 ClassMethodsOption:C4 RIGHT_BRACE {: RESULT=new ClassDecl(className, E1, I2, C3, C4); RESULT.setLine(classNameleft); :} ;
+
+ExtendsOption ::= (ClassInheritance) ExtendsSyntaxCheck:E1 {: RESULT=new ClassInheritance(E1); RESULT.setLine(E1left); :}
+                  |
+                  (NoClassInheritance) {: RESULT=new NoClassInheritance(); :} /* epsilon */ ;
+                  
+ExtendsSyntaxCheck ::= (ClassInheritanceSuccess) EXTENDS Type:superClassType {: RESULT=new ClassInheritanceSuccess(superClassType); RESULT.setLine(superClassTypeleft); :}
+                       |
+                       (ClassInheritanceError) EXTENDS error:e
+                       {: parser.report_error("4Syntax Error on line " + eleft + "; error in class inheritance", null); parser.syntaxErrorFound = true; :} {: RESULT=new ClassInheritanceError(); :} ;
+                       
+ImplementsOption ::= (InterfaceImplementation) ImplementsSyntaxCheck:I1 {: RESULT=new InterfaceImplementation(I1); RESULT.setLine(I1left); :}
+                     |
+                     (NoInterfaceImplementation) {: RESULT=new NoInterfaceImplementation(); :} /* epsilon */ ;
+                     
+ImplementsSyntaxCheck ::= (InterfaceImplementationSuccess) IMPLEMENTS InterfaceList:I1 {: RESULT=new InterfaceImplementationSuccess(I1); RESULT.setLine(I1left); :}
+                          |
+                          (InterfaceImplementationError) IMPLEMENTS error:e
+                          {: parser.report_error("4Syntax Error on line " + eleft + "; error in class interface implementation declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new InterfaceImplementationError(); :} ;
+                          
+InterfaceList ::= (MultipleInterfaces) InterfaceList:I1 COMMA InterfaceImplemented:I2 {: RESULT=new MultipleInterfaces(I1, I2); RESULT.setLine(I1left); :}
+                  |
+                  (SingleInterface) InterfaceImplemented:I1 {: RESULT=new SingleInterface(I1); RESULT.setLine(I1left); :} ;
+
+InterfaceImplemented ::= (InterfaceImplemented) Type:interfaceType {: RESULT=new InterfaceImplemented(interfaceType); RESULT.setLine(interfaceTypeleft); :} ;
+
+ClassVarDeclList ::= (ClassVarDeclarations) ClassVarDeclList:C1 ClassVarDeclSyntaxCheck:C2 {: RESULT=new ClassVarDeclarations(C1, C2); RESULT.setLine(C1left); :}
+                     |
+                     (NoClassVarDeclarations) {: RESULT=new NoClassVarDeclarations(); :} /* epsilon */ ;                
+
+ClassVarDeclSyntaxCheck ::= (ClassVarDeclarationsSuccess) ClassVarDeclCheck:C1 SEMICOLON {: RESULT=new ClassVarDeclarationsSuccess(C1); RESULT.setLine(C1left); :}
+                            |
+                            (ClassVarDeclarationsError) error:e 
+                            {: parser.report_error("4Syntax Error on line " + eleft + "; error in class field declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new ClassVarDeclarationsError(); :} ;
+                            
+ClassVarDeclCheck ::= (ClassVarDeclSuccess) Type:classVarType MultipleClassVarDecl:M1 {: RESULT=new ClassVarDeclSuccess(classVarType, M1); RESULT.setLine(classVarTypeleft); :}
+                      |
+                      (ClassVarDeclError) error:e
+                      {: parser.report_error("4Syntax Error on line " + eleft + "; error in class field declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new ClassVarDeclError(); :};
+                      
+MultipleClassVarDecl ::= (MultipleClassVariableDeclarations) MultipleClassVarDecl:M1 COMMA SingleClassVarDecl:S2 {: RESULT=new MultipleClassVariableDeclarations(M1, S2); RESULT.setLine(M1left); :}
+                         |
+                         (SingleClassVariableDeclaration) SingleClassVarDecl:S1 {: RESULT=new SingleClassVariableDeclaration(S1); RESULT.setLine(S1left); :} ;
+                         
+SingleClassVarDecl ::= (SingleClassVarDecl) IDENT:classVarName ClassVarArrayOption:C1 {: RESULT=new SingleClassVarDecl(classVarName, C1); RESULT.setLine(classVarNameleft); :} ;
+
+ClassVarArrayOption ::= (ClassArrayVariable) LEFT_BRACKET RIGHT_BRACKET {: RESULT=new ClassArrayVariable(); :}
+                        |
+                        (NoClassArrayVariable) {: RESULT=new NoClassArrayVariable(); :} /* epsilon */ ;
+                        
+ClassMethodsOption ::= (ClassMethodBraces) LEFT_BRACE ClassMethodDeclarationsList:C1 RIGHT_BRACE {: RESULT=new ClassMethodBraces(C1); RESULT.setLine(C1left); :}
+                       |
+                       (NoClassMethodBraces) {: RESULT=new NoClassMethodBraces(); :} /* epsilon */ ;
+
+ClassMethodDeclarationsList ::= (ClassMethodsDeclarations) ClassMethodDeclarationsList:C1 ClassMethodDecl:C2 {: RESULT=new ClassMethodsDeclarations(C1, C2); RESULT.setLine(C1left); :}
+                                |
+                                (NoClassMethodsDeclarations) {: RESULT=new NoClassMethodsDeclarations(); :} /* epsilon */ ;        
+
+InterfaceDecl ::= (InterfaceDecl) INTERFACE InterfaceSyntaxCheck:I1 RIGHT_BRACE {: RESULT=new InterfaceDecl(I1); RESULT.setLine(I1left); :} ;         
+
+InterfaceSyntaxCheck ::= (InterfaceDeclSuccess) IDENT:interfaceName LEFT_BRACE InterfaceMethodDeclarationList:I1 {: RESULT=new InterfaceDeclSuccess(interfaceName, I1); RESULT.setLine(interfaceNameleft); :}
+                         |
+                         (InterfaceDeclError) error:e
+                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in interface declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new InterfaceDeclError(); :} ;        
+                         
+InterfaceMethodDeclarationList ::= (InterfaceMethods) InterfaceMethodDeclarationList:I1 InterfaceMethodDecl:I2 {: RESULT=new InterfaceMethods(I1, I2); RESULT.setLine(I1left); :}
+                                   |
+                                   (NoInterfaceMethods) {: RESULT=new NoInterfaceMethods(); :} /* epsilon */ ;   
+                                   
+InterfaceMethodDecl ::= (InterfaceMethodDecl) ReturnType:R1 IDENT:interfaceMethodName LEFT_PARENTHESIS FormParsOption:F2 RIGHT_PARENTHESIS SEMICOLON {: RESULT=new InterfaceMethodDecl(R1, interfaceMethodName, F2); RESULT.setLine(R1left); :} ;
+
+MethodDecl ::= (MethodDecl) ReturnType:R1 IDENT:methodName LEFT_PARENTHESIS FormParsOption:F2 RIGHT_PARENTHESIS MethodVarDeclList:M3 LEFT_BRACE StatementList:S4 RIGHT_BRACE {: RESULT=new MethodDecl(R1, methodName, F2, M3, S4); RESULT.setLine(R1left); :} ;
+
+ClassMethodDecl ::= (ClassMethodDecl) ReturnType:R1 IDENT:methodName LEFT_PARENTHESIS FormParsOption:F2 RIGHT_PARENTHESIS ClassMethodVarDeclList:C3 LEFT_BRACE StatementList:S4 RIGHT_BRACE {: RESULT=new ClassMethodDecl(R1, methodName, F2, C3, S4); RESULT.setLine(R1left); :} ;
+
+MethodVarDeclList ::= (MethodVarDeclarations) MethodVarDeclList:M1 MethodVarDeclSyntaxCheck:M2 {: RESULT=new MethodVarDeclarations(M1, M2); RESULT.setLine(M1left); :}
+                      |
+                      (NoMethodVarDeclarations) {: RESULT=new NoMethodVarDeclarations(); :} /* epsilon */ ;
+                      
+MethodVarDeclSyntaxCheck ::= (MethodVarDeclarationsSuccess) MethodVarDeclCheck:M1 SEMICOLON {: RESULT=new MethodVarDeclarationsSuccess(M1); RESULT.setLine(M1left); :}
+                             |
+                             (MethodVarDeclarationsError) error:e 
+                             {: parser.report_error("4Syntax Error on line " + eleft + "; error in method variable declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new MethodVarDeclarationsError(); :} ;
+                             
+MethodVarDeclCheck ::= (MethodVarDeclSuccess) Type:methodVarType MultipleMethodVarDecl:M1 {: RESULT=new MethodVarDeclSuccess(methodVarType, M1); RESULT.setLine(methodVarTypeleft); :}
+                       |
+                       (MethodVarDeclError) error:e
+                       {: parser.report_error("4Syntax Error on line " + eleft + "; error in method variable declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new MethodVarDeclError(); :};
+                       
+MultipleMethodVarDecl ::= (MultipleMethodVariableDeclarations) MultipleMethodVarDecl:M1 COMMA SingleMethodVarDecl:S2 {: RESULT=new MultipleMethodVariableDeclarations(M1, S2); RESULT.setLine(M1left); :}
+                          |
+                          (SingleMethodVariableDeclaration) SingleMethodVarDecl:S1 {: RESULT=new SingleMethodVariableDeclaration(S1); RESULT.setLine(S1left); :} ;
+                          
+SingleMethodVarDecl ::= (SingleMethodVarDecl) IDENT:methodVarName MethodVarArrayOption:M1 {: RESULT=new SingleMethodVarDecl(methodVarName, M1); RESULT.setLine(methodVarNameleft); :} ;
+
+MethodVarArrayOption ::= (MethodArrayVariable) LEFT_BRACKET RIGHT_BRACKET {: RESULT=new MethodArrayVariable(); :}
+                         |
+                         (NoMethodArrayVariable) {: RESULT=new NoMethodArrayVariable(); :} /* epsilon */ ;
+                         
+ClassMethodVarDeclList ::= (ClassMethodVarDeclarations) ClassMethodVarDeclList:C1 ClassMethodVarDeclSyntaxCheck:C2 {: RESULT=new ClassMethodVarDeclarations(C1, C2); RESULT.setLine(C1left); :}
+                           |
+                           (NoClassMethodVarDeclarations) {: RESULT=new NoClassMethodVarDeclarations(); :} /* epsilon */ ;
+                      
+ClassMethodVarDeclSyntaxCheck ::= (ClassMethodVarDeclarationsSuccess) ClassMethodVarDeclCheck:C1 SEMICOLON {: RESULT=new ClassMethodVarDeclarationsSuccess(C1); RESULT.setLine(C1left); :}
+                                  |
+                                  (ClassMethodVarDeclarationsError) error:e 
+                                  {: parser.report_error("4Syntax Error on line " + eleft + "; error in class method variable declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new ClassMethodVarDeclarationsError(); :} ;
+                             
+ClassMethodVarDeclCheck ::= (ClassMethodVarDeclSuccess) Type:classMethodVarType MultipleClassMethodVarDecl:M1 {: RESULT=new ClassMethodVarDeclSuccess(classMethodVarType, M1); RESULT.setLine(classMethodVarTypeleft); :}
+                            |
+                            (ClassMethodVarDeclError) error:e
+                            {: parser.report_error("4Syntax Error on line " + eleft + "; error in class method variable declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new ClassMethodVarDeclError(); :};
+                       
+MultipleClassMethodVarDecl ::= (MultipleClassMethodVariableDeclarations) MultipleClassMethodVarDecl:M1 COMMA SingleClassMethodVarDecl:S2 {: RESULT=new MultipleClassMethodVariableDeclarations(M1, S2); RESULT.setLine(M1left); :}
+                               |
+                               (SingleClassMethodVariableDeclaration) SingleClassMethodVarDecl:S1 {: RESULT=new SingleClassMethodVariableDeclaration(S1); RESULT.setLine(S1left); :} ;
+                          
+SingleClassMethodVarDecl ::= (SingleClassMethodVarDecl) IDENT:classMethodVarName ClassMethodVarArrayOption:C1 {: RESULT=new SingleClassMethodVarDecl(classMethodVarName, C1); RESULT.setLine(classMethodVarNameleft); :} ;
+
+ClassMethodVarArrayOption ::= (ClassMethodArrayVariable) LEFT_BRACKET RIGHT_BRACKET {: RESULT=new ClassMethodArrayVariable(); :}
+                              |
+                              (ClassNoMethodArrayVariable) {: RESULT=new ClassNoMethodArrayVariable(); :} /* epsilon */ ;
+
+ReturnType ::= (NoVoidReturn) Type:T1 {: RESULT=new NoVoidReturn(T1); RESULT.setLine(T1left); :}
+               |
+               (VoidReturn) VOID {: RESULT=new VoidReturn(); :} ;
                
+FormParsOption ::= (FormalParameters) FormPars:F1 {: RESULT=new FormalParameters(F1); RESULT.setLine(F1left); :}
+                   |
+                   (NoFormalParameters) {: RESULT=new NoFormalParameters(); :} /* epsilon */ ;
+                   
+StatementList ::= (Statements) StatementList:S1 Statement:S2 {: RESULT=new Statements(S1, S2); RESULT.setLine(S1left); :}
+                  |
+                  (NoStatements) {: RESULT=new NoStatements(); :} /* epsilon */ ;
+                  
+FormPars ::= (MultipleFormalParameters) FormPars:F1 COMMA SingleFormPar:S2 {: RESULT=new MultipleFormalParameters(F1, S2); RESULT.setLine(F1left); :}
+             |
+             (SingleFormalParameters) SingleFormPar:S1 {: RESULT=new SingleFormalParameters(S1); RESULT.setLine(S1left); :} ;
+             
+SingleFormPar ::= (SingleFormParSuccess) Type:T1 IDENT:formParName FormParArrayOption:F2 {: RESULT=new SingleFormParSuccess(T1, formParName, F2); RESULT.setLine(T1left); :}
+                  |
+                  (SingleFormParError) error:e
+                  {: parser.report_error("4Syntax Error on line " + eleft + "; error in formal parameter declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new SingleFormParError(); :} ;
+                  
+FormParArrayOption ::= (FormParArray) LEFT_BRACKET RIGHT_BRACKET {: RESULT=new FormParArray(); :}
+                       |
+                       (FormParNoArray) {: RESULT=new FormParNoArray(); :} /* epsilon */ ;
+                       
 Type ::= (Type) IDENT:typeName {: RESULT=new Type(typeName); RESULT.setLine(typeNameleft); :} ;
+                       
+Statement ::= (MatchedStmt) MatchedStatement:M1 {: RESULT=new MatchedStmt(M1); RESULT.setLine(M1left); :}
+              |
+              (UnmatchedStmt) UnmatchedStatement:U1 {: RESULT=new UnmatchedStmt(U1); RESULT.setLine(U1left); :} ;
+              
+MatchedStatement ::= (MatchedDesignatorStmt) MatchedDesignatorStatement:M1 {: RESULT=new MatchedDesignatorStmt(M1); RESULT.setLine(M1left); :}
+                     |
+                     (MatchedIfStatement) IF LEFT_PARENTHESIS ConditionSyntaxCheck:C1 RIGHT_PARENTHESIS MatchedStatement:M2 ELSE MatchedStatement:M3 {: RESULT=new MatchedIfStatement(C1, M2, M3); RESULT.setLine(C1left); :}
+                     |
+                     (MatchedForStatement) FOR LEFT_PARENTHESIS FirstForDesignatorOption:F1 SEMICOLON ForConditionOption:F2 SEMICOLON SecondForDesignatorOption:S3 RIGHT_PARENTHESIS MatchedStatement:M4 {: RESULT=new MatchedForStatement(F1, F2, S3, M4); RESULT.setLine(F1left); :}
+                     |
+                     (BreakStatement) BREAK SEMICOLON {: RESULT=new BreakStatement(); :} 
+                     |
+                     (ContinueStatement) CONTINUE SEMICOLON {: RESULT=new ContinueStatement(); :}
+                     |
+                     (ReturnStatement) RETURN ReturnExprOption:R1 SEMICOLON {: RESULT=new ReturnStatement(R1); RESULT.setLine(R1left); :}
+                     |
+                     (ReadStatement) READ LEFT_PARENTHESIS Designator:D1 RIGHT_PARENTHESIS SEMICOLON {: RESULT=new ReadStatement(D1); RESULT.setLine(D1left); :}
+                     |
+                     (PrintStatement) PRINT LEFT_PARENTHESIS Expr:E1 PrintOption:P2 RIGHT_PARENTHESIS SEMICOLON {: RESULT=new PrintStatement(E1, P2); RESULT.setLine(E1left); :}
+                     |
+                     (MultipleStatements) LEFT_BRACE StatementList:S1 RIGHT_BRACE {: RESULT=new MultipleStatements(S1); RESULT.setLine(S1left); :} ;
+                     
+UnmatchedStatement ::= (UnmatchedIfStatement) IF LEFT_PARENTHESIS ConditionSyntaxCheck:C1 RIGHT_PARENTHESIS Statement:S2 {: RESULT=new UnmatchedIfStatement(C1, S2); RESULT.setLine(C1left); :}
+                       |
+                       (UnmatchedElseStatement) IF LEFT_PARENTHESIS ConditionSyntaxCheck:C1 RIGHT_PARENTHESIS MatchedStatement:M2 ELSE UnmatchedStatement:U3 {: RESULT=new UnmatchedElseStatement(C1, M2, U3); RESULT.setLine(C1left); :}
+                       |
+                       (UnmatchedForStatement) FOR LEFT_PARENTHESIS FirstForDesignatorOption:F1 SEMICOLON ForConditionOption:F2 SEMICOLON SecondForDesignatorOption:S3 RIGHT_PARENTHESIS UnmatchedStatement:U4 {: RESULT=new UnmatchedForStatement(F1, F2, S3, U4); RESULT.setLine(F1left); :} ;
+
+ReturnExprOption ::= (ReturnExpr) Expr:E1 {: RESULT=new ReturnExpr(E1); RESULT.setLine(E1left); :}
+                     |
+                     (NoReturnExpr) {: RESULT=new NoReturnExpr(); :} /* epsilon */ ;                       
+ConditionSyntaxCheck ::= (ConditionSuccess) Condition:C1 {: RESULT=new ConditionSuccess(C1); RESULT.setLine(C1left); :}
+                         |
+                         (ConditionError) error:e
+                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in logical condition", null); parser.syntaxErrorFound = true; :} {: RESULT=new ConditionError(); :} ;

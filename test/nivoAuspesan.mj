@@ -1,0 +1,18 @@
+program UspesanProgramNivoA
+
+// deklaracija konstante
+const int c = 3;
+const char cc = 'a', ccc = 'b';
+
+// deklaracija nabrajanja
+enum enumeration { PRVI, PETI = 5, SESTI }
+
+// deklaracija globalne promenljive
+int a, b;
+bool aa;
+char ch, ch1, ch2;
+
+{
+	void main () {
+	}
+}

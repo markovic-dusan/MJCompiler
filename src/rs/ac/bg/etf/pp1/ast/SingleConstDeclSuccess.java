@@ -1,27 +1,28 @@
 // generated with ast extension for cup
 // version 0.8
-// 7/4/2019 18:35:49
+// 10/4/2019 17:32:57
 
 
 package rs.ac.bg.etf.pp1.ast;
 
 public class SingleConstDeclSuccess extends SingleConstDeclSyntaxCheck {
 
-    private String constName;
+    private ConstName ConstName;
     private ConstValue ConstValue;
 
-    public SingleConstDeclSuccess (String constName, ConstValue ConstValue) {
-        this.constName=constName;
+    public SingleConstDeclSuccess (ConstName ConstName, ConstValue ConstValue) {
+        this.ConstName=ConstName;
+        if(ConstName!=null) ConstName.setParent(this);
         this.ConstValue=ConstValue;
         if(ConstValue!=null) ConstValue.setParent(this);
     }
 
-    public String getConstName() {
-        return constName;
+    public ConstName getConstName() {
+        return ConstName;
     }
 
-    public void setConstName(String constName) {
-        this.constName=constName;
+    public void setConstName(ConstName ConstName) {
+        this.ConstName=ConstName;
     }
 
     public ConstValue getConstValue() {
@@ -37,15 +38,18 @@ public class SingleConstDeclSuccess extends SingleConstDeclSyntaxCheck {
     }
 
     public void childrenAccept(Visitor visitor) {
+        if(ConstName!=null) ConstName.accept(visitor);
         if(ConstValue!=null) ConstValue.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
+        if(ConstName!=null) ConstName.traverseTopDown(visitor);
         if(ConstValue!=null) ConstValue.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
+        if(ConstName!=null) ConstName.traverseBottomUp(visitor);
         if(ConstValue!=null) ConstValue.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -55,7 +59,10 @@ public class SingleConstDeclSuccess extends SingleConstDeclSyntaxCheck {
         buffer.append(tab);
         buffer.append("SingleConstDeclSuccess(\n");
 
-        buffer.append(" "+tab+constName);
+        if(ConstName!=null)
+            buffer.append(ConstName.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
         buffer.append("\n");
 
         if(ConstValue!=null)

@@ -2,7 +2,6 @@ package rs.ac.bg.etf.pp1;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -37,19 +36,26 @@ public class MJParserTest {
 			MJParser p = new MJParser(lexer);
 	        Symbol s = p.parse();  //pocetak parsiranja
 	        
-	        log.info (s == null);
-	        log.info (s);
-	        log.info (s.value == null);
-	        
 	        Program prog = (Program)(s.value); 
-	        log.info (prog == null);
 			// ispis sintaksnog stabla
 			log.info(prog.toString(""));
 			log.info("===================================");
+			if (p.syntaxErrorFound) {
+				log.info("Syntax errors found; parsing interrupted");				
+				
+			}
+			else {
+				log.info("No Syntax errors found; proceed to semantic analysis");
+				
+				SemanticAnalyzer v = new SemanticAnalyzer();
+				prog.traverseBottomUp(v); 
+			}
 
 			// ispis prepoznatih programskih konstrukcija
-			SemanticAnalyzer v = new SemanticAnalyzer();
-			prog.traverseBottomUp(v); 
+			//SemanticAnalyzer v = new SemanticAnalyzer();
+			//prog.traverseBottomUp(v); 
+			
+			//prog.traverseTopDown(v);
 			
 		} 
 		finally {

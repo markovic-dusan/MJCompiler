@@ -1,0 +1,71 @@
+INFO  17:33:28,247 - Compiling source file: C:\workspace\MJCompiler\test\program.mj
+INFO  17:33:28,325 - Program(
+  ProgramName(
+   prog
+  ) [ProgramName]
+  GlobalDeclarations(
+    NoGlobalDeclarations(
+    ) [NoGlobalDeclarations]
+    ClassDeclaration(
+      ClassDecl(
+       klasa
+        NoClassInheritance(
+        ) [NoClassInheritance]
+        NoInterfaceImplementation(
+        ) [NoInterfaceImplementation]
+        NoClassVarDeclarations(
+        ) [NoClassVarDeclarations]
+        ClassMethodBraces(
+          ClassMethodsDeclarations(
+            NoClassMethodsDeclarations(
+            ) [NoClassMethodsDeclarations]
+            ClassMethodDecl(
+              VoidReturn(
+              ) [VoidReturn]
+             metod1
+              NoFormalParameters(
+              ) [NoFormalParameters]
+              ClassMethodVarDeclarations(
+                NoClassMethodVarDeclarations(
+                ) [NoClassMethodVarDeclarations]
+                ClassMethodVarDeclarationsSuccess(
+                  ClassMethodVarDeclSuccess(
+                    Type(
+                     int
+                    ) [Type]
+                    SingleClassMethodVariableDeclaration(
+                      SingleClassMethodVarDecl(
+                       a
+                        ClassNoMethodArrayVariable(
+                        ) [ClassNoMethodArrayVariable]
+                      ) [SingleClassMethodVarDecl]
+                    ) [SingleClassMethodVariableDeclaration]
+                  ) [ClassMethodVarDeclSuccess]
+                ) [ClassMethodVarDeclarationsSuccess]
+              ) [ClassMethodVarDeclarations]
+              Statements(
+                NoStatements(
+                ) [NoStatements]
+                MatchedStmt(
+                  ReturnStatement(
+                    NoReturnExpr(
+                    ) [NoReturnExpr]
+                  ) [ReturnStatement]
+                ) [MatchedStmt]
+              ) [Statements]
+            ) [ClassMethodDecl]
+          ) [ClassMethodsDeclarations]
+        ) [ClassMethodBraces]
+      ) [ClassDecl]
+    ) [ClassDeclaration]
+  ) [GlobalDeclarations]
+  NoGlobalMethodsDeclarations(
+  ) [NoGlobalMethodsDeclarations]
+) [Program]
+INFO  17:33:28,326 - ===================================
+INFO  17:33:28,326 - No Syntax errors found; proceed to semantic analysis
+INFO  17:33:28,328 - ProgramName Visited
+INFO  17:33:28,328 - ProgramName: prog
+INFO  17:33:28,329 - Type: int
+INFO  17:33:28,329 - TypeLine: 5
+INFO  17:33:28,329 - Program visited

@@ -1,6 +1,6 @@
 // generated with ast extension for cup
 // version 0.8
-// 7/4/2019 18:35:49
+// 10/4/2019 17:32:57
 
 
 package rs.ac.bg.etf.pp1.ast;
@@ -9,30 +9,19 @@ public class VarDecl implements SyntaxNode {
 
     private SyntaxNode parent;
     private int line;
-    private Type Type;
-    private MultipleVarDecl MultipleVarDecl;
+    private VarSyntaxCheck VarSyntaxCheck;
 
-    public VarDecl (Type Type, MultipleVarDecl MultipleVarDecl) {
-        this.Type=Type;
-        if(Type!=null) Type.setParent(this);
-        this.MultipleVarDecl=MultipleVarDecl;
-        if(MultipleVarDecl!=null) MultipleVarDecl.setParent(this);
+    public VarDecl (VarSyntaxCheck VarSyntaxCheck) {
+        this.VarSyntaxCheck=VarSyntaxCheck;
+        if(VarSyntaxCheck!=null) VarSyntaxCheck.setParent(this);
     }
 
-    public Type getType() {
-        return Type;
+    public VarSyntaxCheck getVarSyntaxCheck() {
+        return VarSyntaxCheck;
     }
 
-    public void setType(Type Type) {
-        this.Type=Type;
-    }
-
-    public MultipleVarDecl getMultipleVarDecl() {
-        return MultipleVarDecl;
-    }
-
-    public void setMultipleVarDecl(MultipleVarDecl MultipleVarDecl) {
-        this.MultipleVarDecl=MultipleVarDecl;
+    public void setVarSyntaxCheck(VarSyntaxCheck VarSyntaxCheck) {
+        this.VarSyntaxCheck=VarSyntaxCheck;
     }
 
     public SyntaxNode getParent() {
@@ -56,19 +45,16 @@ public class VarDecl implements SyntaxNode {
     }
 
     public void childrenAccept(Visitor visitor) {
-        if(Type!=null) Type.accept(visitor);
-        if(MultipleVarDecl!=null) MultipleVarDecl.accept(visitor);
+        if(VarSyntaxCheck!=null) VarSyntaxCheck.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
-        if(Type!=null) Type.traverseTopDown(visitor);
-        if(MultipleVarDecl!=null) MultipleVarDecl.traverseTopDown(visitor);
+        if(VarSyntaxCheck!=null) VarSyntaxCheck.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
-        if(Type!=null) Type.traverseBottomUp(visitor);
-        if(MultipleVarDecl!=null) MultipleVarDecl.traverseBottomUp(visitor);
+        if(VarSyntaxCheck!=null) VarSyntaxCheck.traverseBottomUp(visitor);
         accept(visitor);
     }
 
@@ -77,14 +63,8 @@ public class VarDecl implements SyntaxNode {
         buffer.append(tab);
         buffer.append("VarDecl(\n");
 
-        if(Type!=null)
-            buffer.append(Type.toString("  "+tab));
-        else
-            buffer.append(tab+"  null");
-        buffer.append("\n");
-
-        if(MultipleVarDecl!=null)
-            buffer.append(MultipleVarDecl.toString("  "+tab));
+        if(VarSyntaxCheck!=null)
+            buffer.append(VarSyntaxCheck.toString("  "+tab));
         else
             buffer.append(tab+"  null");
         buffer.append("\n");

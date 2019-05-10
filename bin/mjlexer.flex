@@ -62,6 +62,7 @@ import java_cup.runtime.Symbol;
 "for"       { return new_symbol(sym.FOR, yytext());      }
 "extends"   { return new_symbol(sym.EXTENDS, yytext());  }
 "continue"  { return new_symbol(sym.CONTINUE, yytext()); }
+"implements" { return new_symbol(sym.IMPLEMENTS, yytext()); }
 
 
 "+"   { return new_symbol(sym.PLUS, yytext());               }
