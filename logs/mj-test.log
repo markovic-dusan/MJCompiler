@@ -1,5 +1,6 @@
-INFO  17:33:28,247 - Compiling source file: C:\workspace\MJCompiler\test\program.mj
-INFO  17:33:28,325 - Program(
+INFO  12:00:54,754 - Compiling source file: C:\workspace\MJCompiler\test\program.mj
+ERROR 12:00:55,034 - 4Syntax Error on line 24; error in designator statement
+INFO  12:00:55,048 - Program(
   ProgramName(
    prog
   ) [ProgramName]
@@ -47,10 +48,10 @@ INFO  17:33:28,325 - Program(
                 NoStatements(
                 ) [NoStatements]
                 MatchedStmt(
-                  ReturnStatement(
-                    NoReturnExpr(
-                    ) [NoReturnExpr]
-                  ) [ReturnStatement]
+                  MatchedDesignatorStmt(
+                    MatchedDesignatorStatementError(
+                    ) [MatchedDesignatorStatementError]
+                  ) [MatchedDesignatorStmt]
                 ) [MatchedStmt]
               ) [Statements]
             ) [ClassMethodDecl]
@@ -62,10 +63,5 @@ INFO  17:33:28,325 - Program(
   NoGlobalMethodsDeclarations(
   ) [NoGlobalMethodsDeclarations]
 ) [Program]
-INFO  17:33:28,326 - ===================================
-INFO  17:33:28,326 - No Syntax errors found; proceed to semantic analysis
-INFO  17:33:28,328 - ProgramName Visited
-INFO  17:33:28,328 - ProgramName: prog
-INFO  17:33:28,329 - Type: int
-INFO  17:33:28,329 - TypeLine: 5
-INFO  17:33:28,329 - Program visited
+INFO  12:00:55,049 - ===================================
+INFO  12:00:55,049 - Syntax errors found; parsing interrupted

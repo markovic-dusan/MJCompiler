@@ -423,10 +423,114 @@ UnmatchedStatement ::= (UnmatchedIfStatement) IF LEFT_PARENTHESIS ConditionSynta
                        |
                        (UnmatchedForStatement) FOR LEFT_PARENTHESIS FirstForDesignatorOption:F1 SEMICOLON ForConditionOption:F2 SEMICOLON SecondForDesignatorOption:S3 RIGHT_PARENTHESIS UnmatchedStatement:U4 {: RESULT=new UnmatchedForStatement(F1, F2, S3, U4); RESULT.setLine(F1left); :} ;
 
-ReturnExprOption ::= (ReturnExpr) Expr:E1 {: RESULT=new ReturnExpr(E1); RESULT.setLine(E1left); :}
-                     |
-                     (NoReturnExpr) {: RESULT=new NoReturnExpr(); :} /* epsilon */ ;                       
 ConditionSyntaxCheck ::= (ConditionSuccess) Condition:C1 {: RESULT=new ConditionSuccess(C1); RESULT.setLine(C1left); :}
                          |
                          (ConditionError) error:e
-                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in logical condition", null); parser.syntaxErrorFound = true; :} {: RESULT=new ConditionError(); :} ;
+                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in logical condition", null); parser.syntaxErrorFound = true; :} {: RESULT=new ConditionError(); :} ; 
+                                                  
+FirstForDesignatorOption ::= (FirstForDesignatorStatement) DesignatorStatement:D1 {: RESULT=new FirstForDesignatorStatement(D1); RESULT.setLine(D1left); :}
+                             |
+                             (NoFirstForDesignatorStatement) {: RESULT=new NoFirstForDesignatorStatement(); :} /* epsilon */ ;
+                             
+ForConditionOption ::= (ForCondition) ConditionSyntaxCheck:C1 {: RESULT=new ForCondition(C1); RESULT.setLine(C1left); :}
+                       |
+                       (NoForCondition) {: RESULT=new NoForCondition(); :} /* epsilon */ ; 
+                             
+SecondForDesignatorOption ::= (SecondForDesignatorStatement) DesignatorStatement:D1 {: RESULT=new SecondForDesignatorStatement(D1); RESULT.setLine(D1left); :}
+                              |
+                              (NoSecondForDesignatorStatement) {: RESULT=new NoSecondForDesignatorStatement(); :} /* epsilon */  ;        
+                              
+ReturnExprOption ::= (ReturnExpr) Expr:E1 {: RESULT=new ReturnExpr(E1); RESULT.setLine(E1left); :}
+                     |
+                     (NoReturnExpr) {: RESULT=new NoReturnExpr(); :} /* epsilon */ ;
+                     
+PrintOption ::= (PrintArg) COMMA NUMBER:N1 {: RESULT=new PrintArg(N1); RESULT.setLine(N1left); :}
+                |
+                (NoPrintArg) {: RESULT=new NoPrintArg(); :} /* epsilon */ ;                 
+MatchedDesignatorStatement ::= (MatchedDesignatorStatementSuccess) DesignatorStatement:D1 SEMICOLON {: RESULT=new MatchedDesignatorStatementSuccess(D1); RESULT.setLine(D1left); :}
+                               |
+                               (MatchedDesignatorStatementError) error:e SEMICOLON
+                               {: parser.report_error("4Syntax Error on line " + eleft + "; error in designator statement", null); parser.syntaxErrorFound = true; :} {: RESULT=new MatchedDesignatorStatementError(); :}  ;
+
+DesignatorStatement ::= (AssignStatementSuccess) Designator:D1 Assignop:A2 Expr:E3 {: RESULT=new AssignStatementSuccess(D1, A2, E3); RESULT.setLine(D1left); :}
+                        |
+                        (AssignStatementError) Designator:D1 Assignop:A2 error:e
+                        {: parser.report_error("4Syntax Error on line " + eleft + "; error in assign statement", null); parser.syntaxErrorFound = true; :} {: RESULT=new AssignStatementError(D1, A2); RESULT.setLine(D1left); :} 
+                        |
+                        (MethodCallStatement) Designator:D1 LEFT_PARENTHESIS ActParamsOption:A2 RIGHT_PARENTHESIS {: RESULT=new MethodCallStatement(D1, A2); RESULT.setLine(D1left); :}
+                        |
+                        (IncrementStatement) Designator:D1 INC {: RESULT=new IncrementStatement(D1); RESULT.setLine(D1left); :}
+                        |
+                        (DecrementStatement) Designator:D1 DEC {: RESULT=new DecrementStatement(D1); RESULT.setLine(D1left); :};
+                        
+ActParamsOption ::= (ActualParameters) ActPars:A1 {: RESULT=new ActualParameters(A1); RESULT.setLine(A1left); :}
+                    |
+                    (NoActualParameters) {: RESULT=new NoActualParameters(); :} /* epsilon */  ; 
+                    
+ActPars ::= (MultipleActualParameters) ActPars:A1 COMMA Expr:E2 {: RESULT=new MultipleActualParameters(A1, E2); RESULT.setLine(A1left); :}
+            |
+            (SingleActualParameters) Expr:E1 {: RESULT=new SingleActualParameters(E1); RESULT.setLine(E1left); :} ;
+            
+Condition ::= (MultipleTermCondition) Condition:C1 OR CondTerm:C2 {: RESULT=new MultipleTermCondition(C1, C2); RESULT.setLine(C1left); :}
+              |
+              (SingleTermCondition) CondTerm:C1 {: RESULT=new SingleTermCondition(C1); RESULT.setLine(C1left); :} ;
+              
+CondTerm ::= (MultipleFactTerm) CondTerm:C1 AND CondFact:C2 {: RESULT=new MultipleFactTerm(C1, C2); RESULT.setLine(C1left); :}
+             |
+             (SingleFactTerm) CondFact:C1 {: RESULT=new SingleFactTerm(C1); RESULT.setLine(C1left); :} ;
+
+CondFact ::= (MultipleExprFact) Expr:E1 Relop:R2 Expr:E3 {: RESULT=new MultipleExprFact(E1, R2, E3); RESULT.setLine(E1left); :}
+             |
+             (SingleExprFact) Expr:E1 {: RESULT=new SingleExprFact(E1); RESULT.setLine(E1left); :} ;
+             
+Expr ::= (MultipleTermExpr) Expr:E1 Addop:A2 Term:T3 {: RESULT=new MultipleTermExpr(E1, A2, T3); RESULT.setLine(E1left); :}
+         |
+         (SingleTermExpr) Term:T1 {: RESULT=new SingleTermExpr(T1); RESULT.setLine(T1left); :}
+         |
+         (MinusSingleTermExpr) MINUS Term:T1 {: RESULT=new MinusSingleTermExpr(T1); RESULT.setLine(T1left); :} ;
+               
+Term ::= (MultipleFactorTerm) Term:T1 Mulop:M2 Factor:F3 {: RESULT=new MultipleFactorTerm(T1, M2, F3); RESULT.setLine(T1left); :}
+         |
+         (SingleFactorTerm) Factor:F1 {: RESULT=new SingleFactorTerm(F1); RESULT.setLine(F1left); :} ;
+             
+Factor ::= (DeclDesignator) Designator:D1 {: RESULT=new DeclDesignator(D1); RESULT.setLine(D1left); :}
+           |
+           (MethodDesignator) Designator:D1 LEFT_PARENTHESIS ActParamsOption:A2 RIGHT_PARENTHESIS {: RESULT=new MethodDesignator(D1, A2); RESULT.setLine(D1left); :}
+           |
+           (ConstFactor) ConstValue:constValue {: RESULT=new ConstFactor(constValue); RESULT.setLine(constValueleft); :}
+           |
+           (NewFactor) NEW Type:T1 {: RESULT=new NewFactor(T1); RESULT.setLine(T1left); :}
+           |
+           (NewArrayFactor) NEW Type:T1 LEFT_BRACKET Expr:E2 RIGHT_BRACKET {: RESULT=new NewArrayFactor(T1, E2); RESULT.setLine(T1left); :}
+           |
+           (CompositeFactor) LEFT_PARENTHESIS Expr:E1 RIGHT_PARENTHESIS {: RESULT=new CompositeFactor(E1); RESULT.setLine(E1left); :} ;
+           
+Designator ::= (SimpleDesignator) IDENT:designName {: RESULT=new SimpleDesignator(designName); RESULT.setLine(designNameleft); :}
+               |
+               (ClassOrEnumDesignator) Designator:D1 PERIOD IDENT:classOrEnumFieldName {: RESULT=new ClassOrEnumDesignator(D1, classOrEnumFieldName); RESULT.setLine(D1left); :}
+               |
+               (ArrayDesignator) Designator:D1 LEFT_BRACKET Expr:E2 RIGHT_BRACKET {: RESULT=new ArrayDesignator(D1, E2); RESULT.setLine(D1left); :} ;               
+
+Assignop ::= (Assign) ASSIGN {: RESULT=new Assign(); :};
+
+Relop ::= (Equals) EQUALS {: RESULT=new Equals(); :}
+          |
+          (NotEquals) NOT_EQUALS {: RESULT=new NotEquals(); :}
+          |
+          (GreaterThan) GREATER_THAN {: RESULT=new GreaterThan(); :}
+          |
+          (GreaterThanEquals) GREATER_THAN_EQUALS {: RESULT=new GreaterThanEquals(); :}
+          |
+          (LessThan) LESS_THAN {: RESULT=new LessThan(); :}
+          |
+          (LessThanEquals) LESS_THAN_EQUALS {: RESULT=new LessThanEquals(); :} ;
+          
+Addop ::= (Plus) PLUS {: RESULT=new Plus(); :}
+          |
+          (Minus) MINUS {: RESULT=new Minus(); :} ;
+          
+Mulop ::= (Mul) MUL {: RESULT=new Mul(); :}
+          |
+          (Div) DIV {: RESULT=new Div(); :}
+          |
+          (Mod) MOD {: RESULT=new Mod(); :} ; 

@@ -3,7 +3,7 @@ program prog
 class klasa {
 	{
 		void metod1 () int a; {
-		    return;
+		    a =+ 4;
 		}
 	}
 }

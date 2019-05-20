@@ -1,9 +1,9 @@
 // generated with ast extension for cup
 // version 0.8
-// 10/4/2019 17:32:57
+// 13/4/2019 15:44:20
 
 
-package rs.ac.bg.etf.pp1.ast;
+package src.rs.ac.bg.etf.pp1.ast;
 
 public interface Visitor { 
 
@@ -78,10 +78,61 @@ public interface Visitor {
     public void visit(MinusOption MinusOption);
     public void visit(ClassMethodsOption ClassMethodsOption);
     public void visit(ClassMethodDeclarationsList ClassMethodDeclarationsList);
-    public void visit(ConditionError ConditionError);
-    public void visit(ConditionSuccess ConditionSuccess);
+    public void visit(Mod Mod);
+    public void visit(Div Div);
+    public void visit(Mul Mul);
+    public void visit(Minus Minus);
+    public void visit(Plus Plus);
+    public void visit(LessThanEquals LessThanEquals);
+    public void visit(LessThan LessThan);
+    public void visit(GreaterThanEquals GreaterThanEquals);
+    public void visit(GreaterThan GreaterThan);
+    public void visit(NotEquals NotEquals);
+    public void visit(Equals Equals);
+    public void visit(Assign Assign);
+    public void visit(ArrayDesignator ArrayDesignator);
+    public void visit(ClassOrEnumDesignator ClassOrEnumDesignator);
+    public void visit(SimpleDesignator SimpleDesignator);
+    public void visit(CompositeFactor CompositeFactor);
+    public void visit(NewArrayFactor NewArrayFactor);
+    public void visit(NewFactor NewFactor);
+    public void visit(ConstFactor ConstFactor);
+    public void visit(MethodDesignator MethodDesignator);
+    public void visit(DeclDesignator DeclDesignator);
+    public void visit(SingleFactorTerm SingleFactorTerm);
+    public void visit(MultipleFactorTerm MultipleFactorTerm);
+    public void visit(MinusSingleTermExpr MinusSingleTermExpr);
+    public void visit(SingleTermExpr SingleTermExpr);
+    public void visit(MultipleTermExpr MultipleTermExpr);
+    public void visit(SingleExprFact SingleExprFact);
+    public void visit(MultipleExprFact MultipleExprFact);
+    public void visit(SingleFactTerm SingleFactTerm);
+    public void visit(MultipleFactTerm MultipleFactTerm);
+    public void visit(SingleTermCondition SingleTermCondition);
+    public void visit(MultipleTermCondition MultipleTermCondition);
+    public void visit(SingleActualParameters SingleActualParameters);
+    public void visit(MultipleActualParameters MultipleActualParameters);
+    public void visit(NoActualParameters NoActualParameters);
+    public void visit(ActualParameters ActualParameters);
+    public void visit(DecrementStatement DecrementStatement);
+    public void visit(IncrementStatement IncrementStatement);
+    public void visit(MethodCallStatement MethodCallStatement);
+    public void visit(AssignStatementError AssignStatementError);
+    public void visit(AssignStatementSuccess AssignStatementSuccess);
+    public void visit(MatchedDesignatorStatementError MatchedDesignatorStatementError);
+    public void visit(MatchedDesignatorStatementSuccess MatchedDesignatorStatementSuccess);
+    public void visit(NoPrintArg NoPrintArg);
+    public void visit(PrintArg PrintArg);
     public void visit(NoReturnExpr NoReturnExpr);
     public void visit(ReturnExpr ReturnExpr);
+    public void visit(NoSecondForDesignatorStatement NoSecondForDesignatorStatement);
+    public void visit(SecondForDesignatorStatement SecondForDesignatorStatement);
+    public void visit(NoForCondition NoForCondition);
+    public void visit(ForCondition ForCondition);
+    public void visit(NoFirstForDesignatorStatement NoFirstForDesignatorStatement);
+    public void visit(FirstForDesignatorStatement FirstForDesignatorStatement);
+    public void visit(ConditionError ConditionError);
+    public void visit(ConditionSuccess ConditionSuccess);
     public void visit(UnmatchedForStatement UnmatchedForStatement);
     public void visit(UnmatchedElseStatement UnmatchedElseStatement);
     public void visit(UnmatchedIfStatement UnmatchedIfStatement);

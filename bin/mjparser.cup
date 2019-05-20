@@ -358,10 +358,114 @@ UnmatchedStatement ::= (UnmatchedIfStatement) IF LEFT_PARENTHESIS ConditionSynta
                        |
                        (UnmatchedForStatement) FOR LEFT_PARENTHESIS FirstForDesignatorOption SEMICOLON ForConditionOption SEMICOLON SecondForDesignatorOption RIGHT_PARENTHESIS UnmatchedStatement ;
 
-ReturnExprOption ::= (ReturnExpr) Expr
-                     |
-                     (NoReturnExpr) /* epsilon */ ;                       
 ConditionSyntaxCheck ::= (ConditionSuccess) Condition
                          |
                          (ConditionError) error:e
-                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in logical condition", null); parser.syntaxErrorFound = true; :} ;
+                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in logical condition", null); parser.syntaxErrorFound = true; :} ; 
+                                                  
+FirstForDesignatorOption ::= (FirstForDesignatorStatement) DesignatorStatement
+                             |
+                             (NoFirstForDesignatorStatement) /* epsilon */ ;
+                             
+ForConditionOption ::= (ForCondition) ConditionSyntaxCheck
+                       |
+                       (NoForCondition) /* epsilon */ ; 
+                             
+SecondForDesignatorOption ::= (SecondForDesignatorStatement) DesignatorStatement
+                              |
+                              (NoSecondForDesignatorStatement) /* epsilon */  ;        
+                              
+ReturnExprOption ::= (ReturnExpr) Expr
+                     |
+                     (NoReturnExpr) /* epsilon */ ;
+                     
+PrintOption ::= (PrintArg) COMMA NUMBER
+                |
+                (NoPrintArg) /* epsilon */ ;                 
+MatchedDesignatorStatement ::= (MatchedDesignatorStatementSuccess) DesignatorStatement SEMICOLON
+                               |
+                               (MatchedDesignatorStatementError) error:e SEMICOLON
+                               {: parser.report_error("4Syntax Error on line " + eleft + "; error in designator statement", null); parser.syntaxErrorFound = true; :}  ;
+
+DesignatorStatement ::= (AssignStatementSuccess) Designator Assignop Expr
+                        |
+                        (AssignStatementError) Designator Assignop error:e
+                        {: parser.report_error("4Syntax Error on line " + eleft + "; error in assign statement", null); parser.syntaxErrorFound = true; :} 
+                        |
+                        (MethodCallStatement) Designator LEFT_PARENTHESIS ActParamsOption RIGHT_PARENTHESIS
+                        |
+                        (IncrementStatement) Designator INC
+                        |
+                        (DecrementStatement) Designator DEC;
+                        
+ActParamsOption ::= (ActualParameters) ActPars
+                    |
+                    (NoActualParameters) /* epsilon */  ; 
+                    
+ActPars ::= (MultipleActualParameters) ActPars COMMA Expr
+            |
+            (SingleActualParameters) Expr ;
+            
+Condition ::= (MultipleTermCondition) Condition OR CondTerm
+              |
+              (SingleTermCondition) CondTerm ;
+              
+CondTerm ::= (MultipleFactTerm) CondTerm AND CondFact
+             |
+             (SingleFactTerm) CondFact ;
+
+CondFact ::= (MultipleExprFact) Expr Relop Expr
+             |
+             (SingleExprFact) Expr ;
+             
+Expr ::= (MultipleTermExpr) Expr Addop Term
+         |
+         (SingleTermExpr) Term
+         |
+         (MinusSingleTermExpr) MINUS Term ;
+               
+Term ::= (MultipleFactorTerm) Term Mulop Factor
+         |
+         (SingleFactorTerm) Factor ;
+             
+Factor ::= (DeclDesignator) Designator
+           |
+           (MethodDesignator) Designator LEFT_PARENTHESIS ActParamsOption RIGHT_PARENTHESIS
+           |
+           (ConstFactor) ConstValue:constValue
+           |
+           (NewFactor) NEW Type
+           |
+           (NewArrayFactor) NEW Type LEFT_BRACKET Expr RIGHT_BRACKET
+           |
+           (CompositeFactor) LEFT_PARENTHESIS Expr RIGHT_PARENTHESIS ;
+           
+Designator ::= (SimpleDesignator) IDENT:designName
+               |
+               (ClassOrEnumDesignator) Designator PERIOD IDENT:classOrEnumFieldName
+               |
+               (ArrayDesignator) Designator LEFT_BRACKET Expr RIGHT_BRACKET ;               
+
+Assignop ::= (Assign) ASSIGN;
+
+Relop ::= (Equals) EQUALS
+          |
+          (NotEquals) NOT_EQUALS
+          |
+          (GreaterThan) GREATER_THAN
+          |
+          (GreaterThanEquals) GREATER_THAN_EQUALS
+          |
+          (LessThan) LESS_THAN
+          |
+          (LessThanEquals) LESS_THAN_EQUALS ;
+          
+Addop ::= (Plus) PLUS
+          |
+          (Minus) MINUS ;
+          
+Mulop ::= (Mul) MUL
+          |
+          (Div) DIV
+          |
+          (Mod) MOD ; 

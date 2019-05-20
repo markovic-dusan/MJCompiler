@@ -1,9 +1,9 @@
 // generated with ast extension for cup
 // version 0.8
-// 10/4/2019 17:32:57
+// 13/4/2019 15:44:20
 
 
-package rs.ac.bg.etf.pp1.ast;
+package src.rs.ac.bg.etf.pp1.ast;
 
 public abstract class VisitorAdaptor implements Visitor { 
 
@@ -78,10 +78,61 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(MinusOption MinusOption) { }
     public void visit(ClassMethodsOption ClassMethodsOption) { }
     public void visit(ClassMethodDeclarationsList ClassMethodDeclarationsList) { }
-    public void visit(ConditionError ConditionError) { visit(); }
-    public void visit(ConditionSuccess ConditionSuccess) { visit(); }
+    public void visit(Mod Mod) { visit(); }
+    public void visit(Div Div) { visit(); }
+    public void visit(Mul Mul) { visit(); }
+    public void visit(Minus Minus) { visit(); }
+    public void visit(Plus Plus) { visit(); }
+    public void visit(LessThanEquals LessThanEquals) { visit(); }
+    public void visit(LessThan LessThan) { visit(); }
+    public void visit(GreaterThanEquals GreaterThanEquals) { visit(); }
+    public void visit(GreaterThan GreaterThan) { visit(); }
+    public void visit(NotEquals NotEquals) { visit(); }
+    public void visit(Equals Equals) { visit(); }
+    public void visit(Assign Assign) { visit(); }
+    public void visit(ArrayDesignator ArrayDesignator) { visit(); }
+    public void visit(ClassOrEnumDesignator ClassOrEnumDesignator) { visit(); }
+    public void visit(SimpleDesignator SimpleDesignator) { visit(); }
+    public void visit(CompositeFactor CompositeFactor) { visit(); }
+    public void visit(NewArrayFactor NewArrayFactor) { visit(); }
+    public void visit(NewFactor NewFactor) { visit(); }
+    public void visit(ConstFactor ConstFactor) { visit(); }
+    public void visit(MethodDesignator MethodDesignator) { visit(); }
+    public void visit(DeclDesignator DeclDesignator) { visit(); }
+    public void visit(SingleFactorTerm SingleFactorTerm) { visit(); }
+    public void visit(MultipleFactorTerm MultipleFactorTerm) { visit(); }
+    public void visit(MinusSingleTermExpr MinusSingleTermExpr) { visit(); }
+    public void visit(SingleTermExpr SingleTermExpr) { visit(); }
+    public void visit(MultipleTermExpr MultipleTermExpr) { visit(); }
+    public void visit(SingleExprFact SingleExprFact) { visit(); }
+    public void visit(MultipleExprFact MultipleExprFact) { visit(); }
+    public void visit(SingleFactTerm SingleFactTerm) { visit(); }
+    public void visit(MultipleFactTerm MultipleFactTerm) { visit(); }
+    public void visit(SingleTermCondition SingleTermCondition) { visit(); }
+    public void visit(MultipleTermCondition MultipleTermCondition) { visit(); }
+    public void visit(SingleActualParameters SingleActualParameters) { visit(); }
+    public void visit(MultipleActualParameters MultipleActualParameters) { visit(); }
+    public void visit(NoActualParameters NoActualParameters) { visit(); }
+    public void visit(ActualParameters ActualParameters) { visit(); }
+    public void visit(DecrementStatement DecrementStatement) { visit(); }
+    public void visit(IncrementStatement IncrementStatement) { visit(); }
+    public void visit(MethodCallStatement MethodCallStatement) { visit(); }
+    public void visit(AssignStatementError AssignStatementError) { visit(); }
+    public void visit(AssignStatementSuccess AssignStatementSuccess) { visit(); }
+    public void visit(MatchedDesignatorStatementError MatchedDesignatorStatementError) { visit(); }
+    public void visit(MatchedDesignatorStatementSuccess MatchedDesignatorStatementSuccess) { visit(); }
+    public void visit(NoPrintArg NoPrintArg) { visit(); }
+    public void visit(PrintArg PrintArg) { visit(); }
     public void visit(NoReturnExpr NoReturnExpr) { visit(); }
     public void visit(ReturnExpr ReturnExpr) { visit(); }
+    public void visit(NoSecondForDesignatorStatement NoSecondForDesignatorStatement) { visit(); }
+    public void visit(SecondForDesignatorStatement SecondForDesignatorStatement) { visit(); }
+    public void visit(NoForCondition NoForCondition) { visit(); }
+    public void visit(ForCondition ForCondition) { visit(); }
+    public void visit(NoFirstForDesignatorStatement NoFirstForDesignatorStatement) { visit(); }
+    public void visit(FirstForDesignatorStatement FirstForDesignatorStatement) { visit(); }
+    public void visit(ConditionError ConditionError) { visit(); }
+    public void visit(ConditionSuccess ConditionSuccess) { visit(); }
     public void visit(UnmatchedForStatement UnmatchedForStatement) { visit(); }
     public void visit(UnmatchedElseStatement UnmatchedElseStatement) { visit(); }
     public void visit(UnmatchedIfStatement UnmatchedIfStatement) { visit(); }

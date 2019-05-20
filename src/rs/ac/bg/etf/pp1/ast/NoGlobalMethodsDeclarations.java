@@ -1,9 +1,9 @@
 // generated with ast extension for cup
 // version 0.8
-// 10/4/2019 17:32:57
+// 13/4/2019 15:44:20
 
 
-package rs.ac.bg.etf.pp1.ast;
+package src.rs.ac.bg.etf.pp1.ast;
 
 public class NoGlobalMethodsDeclarations extends MethodDeclarationsList {
 
