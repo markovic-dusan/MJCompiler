@@ -1,9 +1,9 @@
 // generated with ast extension for cup
 // version 0.8
-// 13/4/2019 15:44:20
+// 30/4/2019 19:15:39
 
 
-package src.rs.ac.bg.etf.pp1.ast;
+package rs.ac.bg.etf.pp1.ast;
 
 public abstract class VisitorAdaptor implements Visitor { 
 
@@ -160,8 +160,9 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(FormalParameters FormalParameters) { visit(); }
     public void visit(VoidReturn VoidReturn) { visit(); }
     public void visit(NoVoidReturn NoVoidReturn) { visit(); }
-    public void visit(ClassNoMethodArrayVariable ClassNoMethodArrayVariable) { visit(); }
+    public void visit(ClassMethodNoArrayVariable ClassMethodNoArrayVariable) { visit(); }
     public void visit(ClassMethodArrayVariable ClassMethodArrayVariable) { visit(); }
+    public void visit(ClassMethodVarName ClassMethodVarName) { visit(); }
     public void visit(SingleClassMethodVarDecl SingleClassMethodVarDecl) { visit(); }
     public void visit(SingleClassMethodVariableDeclaration SingleClassMethodVariableDeclaration) { visit(); }
     public void visit(MultipleClassMethodVariableDeclarations MultipleClassMethodVariableDeclarations) { visit(); }
@@ -182,11 +183,15 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(MethodVarDeclarationsSuccess MethodVarDeclarationsSuccess) { visit(); }
     public void visit(NoMethodVarDeclarations NoMethodVarDeclarations) { visit(); }
     public void visit(MethodVarDeclarations MethodVarDeclarations) { visit(); }
+    public void visit(ClassMethodName ClassMethodName) { visit(); }
     public void visit(ClassMethodDecl ClassMethodDecl) { visit(); }
+    public void visit(MethodName MethodName) { visit(); }
     public void visit(MethodDecl MethodDecl) { visit(); }
+    public void visit(InterfaceMethodName InterfaceMethodName) { visit(); }
     public void visit(InterfaceMethodDecl InterfaceMethodDecl) { visit(); }
     public void visit(NoInterfaceMethods NoInterfaceMethods) { visit(); }
     public void visit(InterfaceMethods InterfaceMethods) { visit(); }
+    public void visit(InterfaceName InterfaceName) { visit(); }
     public void visit(InterfaceDeclError InterfaceDeclError) { visit(); }
     public void visit(InterfaceDeclSuccess InterfaceDeclSuccess) { visit(); }
     public void visit(InterfaceDecl InterfaceDecl) { visit(); }
@@ -216,6 +221,7 @@ public abstract class VisitorAdaptor implements Visitor {
     public void visit(ClassInheritanceSuccess ClassInheritanceSuccess) { visit(); }
     public void visit(NoClassInheritance NoClassInheritance) { visit(); }
     public void visit(ClassInheritance ClassInheritance) { visit(); }
+    public void visit(ClassName ClassName) { visit(); }
     public void visit(ClassDecl ClassDecl) { visit(); }
     public void visit(NoArrayVariable NoArrayVariable) { visit(); }
     public void visit(ArrayVariable ArrayVariable) { visit(); }

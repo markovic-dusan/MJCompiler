@@ -85,6 +85,7 @@ nonterminal SingleVarDeclSyntaxCheck SingleVarDeclSyntaxCheck;
 nonterminal SingleVarDecl SingleVarDecl;
 nonterminal ArrayOption ArrayOption;
 non terminal ClassDecl ClassDecl;
+nonterminal ClassName ClassName;
 nonterminal ExtendsOption ExtendsOption;
 nonterminal ExtendsSyntaxCheck ExtendsSyntaxCheck;
 nonterminal ImplementsOption ImplementsOption;
@@ -100,19 +101,24 @@ nonterminal ClassVarArrayOption ClassVarArrayOption;
 non terminal ClassMethodsOption ClassMethodsOption;
 nonterminal ClassMethodDeclarationsList ClassMethodDeclarationsList;
 nonterminal ClassMethodDecl ClassMethodDecl;
+nonterminal ClassMethodName ClassMethodName;
 nonterminal ClassMethodVarDeclList ClassMethodVarDeclList;
 nonterminal ClassMethodVarDeclSyntaxCheck ClassMethodVarDeclSyntaxCheck;
 nonterminal ClassMethodVarDeclCheck ClassMethodVarDeclCheck;
 nonterminal MultipleClassMethodVarDecl MultipleClassMethodVarDecl;
 nonterminal SingleClassMethodVarDecl SingleClassMethodVarDecl;
+nonterminal ClassMethodVarName ClassMethodVarName;
 nonterminal ClassMethodVarArrayOption ClassMethodVarArrayOption;
 non terminal InterfaceDecl InterfaceDecl;
+nonterminal InterfaceName InterfaceName;
 nonterminal InterfaceSyntaxCheck InterfaceSyntaxCheck;
 nonterminal InterfaceMethodDeclarationList InterfaceMethodDeclarationList;
 non terminal InterfaceMethodDecl InterfaceMethodDecl;
+nonterminal InterfaceMethodName InterfaceMethodName;
 nonterminal ReturnType ReturnType;
 nonterminal FormParsOption FormParsOption;
 non terminal MethodDecl MethodDecl;
+nonterminal MethodName MethodName;
 nonterminal MethodVarDeclList MethodVarDeclList;
 nonterminal MethodVarDeclSyntaxCheck MethodVarDeclSyntaxCheck;
 nonterminal MethodVarDeclCheck MethodVarDeclCheck;
@@ -179,7 +185,7 @@ ConstDecl ::= (ConstDecl) CONST ConstSyntaxCheck:C1 SEMICOLON {: RESULT=new Cons
 ConstSyntaxCheck ::= (ConstDeclSuccess) Type:constType MultipleConstDecl:M1 {: RESULT=new ConstDeclSuccess(constType, M1); RESULT.setLine(constTypeleft); :}
                      |
                      (ConstDeclError) error:e 
-                     {: parser.report_error("1Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new ConstDeclError(); :}  ;
+                     {: parser.report_error("Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new ConstDeclError(); :}  ;
 
 MultipleConstDecl ::= (MultipleConstDeclaration) MultipleConstDecl:M1 COMMA SingleConstDecl:S2 {: RESULT=new MultipleConstDeclaration(M1, S2); RESULT.setLine(M1left); :}
                       |
@@ -190,7 +196,7 @@ SingleConstDecl ::= (SingleConstDecl) SingleConstDeclSyntaxCheck:S1 {: RESULT=ne
 SingleConstDeclSyntaxCheck ::= (SingleConstDeclSuccess) ConstName:constName ASSIGN ConstValue:constValue {: RESULT=new SingleConstDeclSuccess(constName, constValue); RESULT.setLine(constNameleft); :}
                                |
                                (SingleConstDeclError) error:e
-                               {: parser.report_error("2Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new SingleConstDeclError(); :} ;
+                               {: parser.report_error("Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new SingleConstDeclError(); :} ;
 
 ConstName ::= (ConstName) IDENT:constName {: RESULT=new ConstName(constName); RESULT.setLine(constNameleft); :} ;
 
@@ -245,7 +251,9 @@ ArrayOption ::= (ArrayVariable) LEFT_BRACKET RIGHT_BRACKET {: RESULT=new ArrayVa
                 |
                 (NoArrayVariable) {: RESULT=new NoArrayVariable(); :} /* epsilon */ ;
                 
-ClassDecl ::= (ClassDecl) CLASS IDENT:className ExtendsOption:E1 ImplementsOption:I2 LEFT_BRACE ClassVarDeclList:C3 ClassMethodsOption:C4 RIGHT_BRACE {: RESULT=new ClassDecl(className, E1, I2, C3, C4); RESULT.setLine(classNameleft); :} ;
+ClassDecl ::= (ClassDecl) CLASS ClassName:C1 ExtendsOption:E2 ImplementsOption:I3 LEFT_BRACE ClassVarDeclList:C4 ClassMethodsOption:C5 RIGHT_BRACE {: RESULT=new ClassDecl(C1, E2, I3, C4, C5); RESULT.setLine(C1left); :} ;
+
+ClassName ::= (ClassName) IDENT:className {: RESULT=new ClassName(className); RESULT.setLine(classNameleft); :};
 
 ExtendsOption ::= (ClassInheritance) ExtendsSyntaxCheck:E1 {: RESULT=new ClassInheritance(E1); RESULT.setLine(E1left); :}
                   |
@@ -305,20 +313,28 @@ ClassMethodDeclarationsList ::= (ClassMethodsDeclarations) ClassMethodDeclaratio
 
 InterfaceDecl ::= (InterfaceDecl) INTERFACE InterfaceSyntaxCheck:I1 RIGHT_BRACE {: RESULT=new InterfaceDecl(I1); RESULT.setLine(I1left); :} ;         
 
-InterfaceSyntaxCheck ::= (InterfaceDeclSuccess) IDENT:interfaceName LEFT_BRACE InterfaceMethodDeclarationList:I1 {: RESULT=new InterfaceDeclSuccess(interfaceName, I1); RESULT.setLine(interfaceNameleft); :}
+InterfaceSyntaxCheck ::= (InterfaceDeclSuccess) InterfaceName:I1 LEFT_BRACE InterfaceMethodDeclarationList:I2 {: RESULT=new InterfaceDeclSuccess(I1, I2); RESULT.setLine(I1left); :}
                          |
                          (InterfaceDeclError) error:e
-                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in interface declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new InterfaceDeclError(); :} ;        
+                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in interface declaration", null); parser.syntaxErrorFound = true; :} {: RESULT=new InterfaceDeclError(); :} ;     
+                         
+InterfaceName ::= (InterfaceName) IDENT:interfaceName {: RESULT=new InterfaceName(interfaceName); RESULT.setLine(interfaceNameleft); :};   
                          
 InterfaceMethodDeclarationList ::= (InterfaceMethods) InterfaceMethodDeclarationList:I1 InterfaceMethodDecl:I2 {: RESULT=new InterfaceMethods(I1, I2); RESULT.setLine(I1left); :}
                                    |
                                    (NoInterfaceMethods) {: RESULT=new NoInterfaceMethods(); :} /* epsilon */ ;   
                                    
-InterfaceMethodDecl ::= (InterfaceMethodDecl) ReturnType:R1 IDENT:interfaceMethodName LEFT_PARENTHESIS FormParsOption:F2 RIGHT_PARENTHESIS SEMICOLON {: RESULT=new InterfaceMethodDecl(R1, interfaceMethodName, F2); RESULT.setLine(R1left); :} ;
+InterfaceMethodDecl ::= (InterfaceMethodDecl) ReturnType:R1 InterfaceMethodName:I2 LEFT_PARENTHESIS FormParsOption:F3 RIGHT_PARENTHESIS SEMICOLON {: RESULT=new InterfaceMethodDecl(R1, I2, F3); RESULT.setLine(R1left); :} ;
 
-MethodDecl ::= (MethodDecl) ReturnType:R1 IDENT:methodName LEFT_PARENTHESIS FormParsOption:F2 RIGHT_PARENTHESIS MethodVarDeclList:M3 LEFT_BRACE StatementList:S4 RIGHT_BRACE {: RESULT=new MethodDecl(R1, methodName, F2, M3, S4); RESULT.setLine(R1left); :} ;
+InterfaceMethodName ::= (InterfaceMethodName) IDENT:interfaceMethodName {: RESULT=new InterfaceMethodName(interfaceMethodName); RESULT.setLine(interfaceMethodNameleft); :};
 
-ClassMethodDecl ::= (ClassMethodDecl) ReturnType:R1 IDENT:methodName LEFT_PARENTHESIS FormParsOption:F2 RIGHT_PARENTHESIS ClassMethodVarDeclList:C3 LEFT_BRACE StatementList:S4 RIGHT_BRACE {: RESULT=new ClassMethodDecl(R1, methodName, F2, C3, S4); RESULT.setLine(R1left); :} ;
+MethodDecl ::= (MethodDecl) ReturnType:R1 MethodName:M2 LEFT_PARENTHESIS FormParsOption:F3 RIGHT_PARENTHESIS MethodVarDeclList:M4 LEFT_BRACE StatementList:S5 RIGHT_BRACE {: RESULT=new MethodDecl(R1, M2, F3, M4, S5); RESULT.setLine(R1left); :} ;
+
+MethodName ::= (MethodName) IDENT:methodName {: RESULT=new MethodName(methodName); RESULT.setLine(methodNameleft); :};
+
+ClassMethodDecl ::= (ClassMethodDecl) ReturnType:R1 ClassMethodName:C2 LEFT_PARENTHESIS FormParsOption:F3 RIGHT_PARENTHESIS ClassMethodVarDeclList:C4 LEFT_BRACE StatementList:S5 RIGHT_BRACE {: RESULT=new ClassMethodDecl(R1, C2, F3, C4, S5); RESULT.setLine(R1left); :} ;
+
+ClassMethodName ::= (ClassMethodName) IDENT:classMethodName {: RESULT=new ClassMethodName(classMethodName); RESULT.setLine(classMethodNameleft); :}; 
 
 MethodVarDeclList ::= (MethodVarDeclarations) MethodVarDeclList:M1 MethodVarDeclSyntaxCheck:M2 {: RESULT=new MethodVarDeclarations(M1, M2); RESULT.setLine(M1left); :}
                       |
@@ -364,9 +380,11 @@ MultipleClassMethodVarDecl ::= (MultipleClassMethodVariableDeclarations) Multipl
                           
 SingleClassMethodVarDecl ::= (SingleClassMethodVarDecl) IDENT:classMethodVarName ClassMethodVarArrayOption:C1 {: RESULT=new SingleClassMethodVarDecl(classMethodVarName, C1); RESULT.setLine(classMethodVarNameleft); :} ;
 
+ClassMethodVarName ::= (ClassMethodVarName) IDENT:classMethodVarName {: RESULT=new ClassMethodVarName(classMethodVarName); RESULT.setLine(classMethodVarNameleft); :};
+
 ClassMethodVarArrayOption ::= (ClassMethodArrayVariable) LEFT_BRACKET RIGHT_BRACKET {: RESULT=new ClassMethodArrayVariable(); :}
                               |
-                              (ClassNoMethodArrayVariable) {: RESULT=new ClassNoMethodArrayVariable(); :} /* epsilon */ ;
+                              (ClassMethodNoArrayVariable) {: RESULT=new ClassMethodNoArrayVariable(); :} /* epsilon */ ;
 
 ReturnType ::= (NoVoidReturn) Type:T1 {: RESULT=new NoVoidReturn(T1); RESULT.setLine(T1left); :}
                |

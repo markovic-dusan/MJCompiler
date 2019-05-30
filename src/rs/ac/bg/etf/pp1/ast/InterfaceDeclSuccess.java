@@ -1,27 +1,28 @@
 // generated with ast extension for cup
 // version 0.8
-// 13/4/2019 15:44:20
+// 30/4/2019 19:15:39
 
 
-package src.rs.ac.bg.etf.pp1.ast;
+package rs.ac.bg.etf.pp1.ast;
 
 public class InterfaceDeclSuccess extends InterfaceSyntaxCheck {
 
-    private String interfaceName;
+    private InterfaceName InterfaceName;
     private InterfaceMethodDeclarationList InterfaceMethodDeclarationList;
 
-    public InterfaceDeclSuccess (String interfaceName, InterfaceMethodDeclarationList InterfaceMethodDeclarationList) {
-        this.interfaceName=interfaceName;
+    public InterfaceDeclSuccess (InterfaceName InterfaceName, InterfaceMethodDeclarationList InterfaceMethodDeclarationList) {
+        this.InterfaceName=InterfaceName;
+        if(InterfaceName!=null) InterfaceName.setParent(this);
         this.InterfaceMethodDeclarationList=InterfaceMethodDeclarationList;
         if(InterfaceMethodDeclarationList!=null) InterfaceMethodDeclarationList.setParent(this);
     }
 
-    public String getInterfaceName() {
-        return interfaceName;
+    public InterfaceName getInterfaceName() {
+        return InterfaceName;
     }
 
-    public void setInterfaceName(String interfaceName) {
-        this.interfaceName=interfaceName;
+    public void setInterfaceName(InterfaceName InterfaceName) {
+        this.InterfaceName=InterfaceName;
     }
 
     public InterfaceMethodDeclarationList getInterfaceMethodDeclarationList() {
@@ -37,15 +38,18 @@ public class InterfaceDeclSuccess extends InterfaceSyntaxCheck {
     }
 
     public void childrenAccept(Visitor visitor) {
+        if(InterfaceName!=null) InterfaceName.accept(visitor);
         if(InterfaceMethodDeclarationList!=null) InterfaceMethodDeclarationList.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
+        if(InterfaceName!=null) InterfaceName.traverseTopDown(visitor);
         if(InterfaceMethodDeclarationList!=null) InterfaceMethodDeclarationList.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
+        if(InterfaceName!=null) InterfaceName.traverseBottomUp(visitor);
         if(InterfaceMethodDeclarationList!=null) InterfaceMethodDeclarationList.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -55,7 +59,10 @@ public class InterfaceDeclSuccess extends InterfaceSyntaxCheck {
         buffer.append(tab);
         buffer.append("InterfaceDeclSuccess(\n");
 
-        buffer.append(" "+tab+interfaceName);
+        if(InterfaceName!=null)
+            buffer.append(InterfaceName.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
         buffer.append("\n");
 
         if(InterfaceMethodDeclarationList!=null)

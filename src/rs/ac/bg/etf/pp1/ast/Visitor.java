@@ -1,9 +1,9 @@
 // generated with ast extension for cup
 // version 0.8
-// 13/4/2019 15:44:20
+// 30/4/2019 19:15:39
 
 
-package src.rs.ac.bg.etf.pp1.ast;
+package rs.ac.bg.etf.pp1.ast;
 
 public interface Visitor { 
 
@@ -160,8 +160,9 @@ public interface Visitor {
     public void visit(FormalParameters FormalParameters);
     public void visit(VoidReturn VoidReturn);
     public void visit(NoVoidReturn NoVoidReturn);
-    public void visit(ClassNoMethodArrayVariable ClassNoMethodArrayVariable);
+    public void visit(ClassMethodNoArrayVariable ClassMethodNoArrayVariable);
     public void visit(ClassMethodArrayVariable ClassMethodArrayVariable);
+    public void visit(ClassMethodVarName ClassMethodVarName);
     public void visit(SingleClassMethodVarDecl SingleClassMethodVarDecl);
     public void visit(SingleClassMethodVariableDeclaration SingleClassMethodVariableDeclaration);
     public void visit(MultipleClassMethodVariableDeclarations MultipleClassMethodVariableDeclarations);
@@ -182,11 +183,15 @@ public interface Visitor {
     public void visit(MethodVarDeclarationsSuccess MethodVarDeclarationsSuccess);
     public void visit(NoMethodVarDeclarations NoMethodVarDeclarations);
     public void visit(MethodVarDeclarations MethodVarDeclarations);
+    public void visit(ClassMethodName ClassMethodName);
     public void visit(ClassMethodDecl ClassMethodDecl);
+    public void visit(MethodName MethodName);
     public void visit(MethodDecl MethodDecl);
+    public void visit(InterfaceMethodName InterfaceMethodName);
     public void visit(InterfaceMethodDecl InterfaceMethodDecl);
     public void visit(NoInterfaceMethods NoInterfaceMethods);
     public void visit(InterfaceMethods InterfaceMethods);
+    public void visit(InterfaceName InterfaceName);
     public void visit(InterfaceDeclError InterfaceDeclError);
     public void visit(InterfaceDeclSuccess InterfaceDeclSuccess);
     public void visit(InterfaceDecl InterfaceDecl);
@@ -216,6 +221,7 @@ public interface Visitor {
     public void visit(ClassInheritanceSuccess ClassInheritanceSuccess);
     public void visit(NoClassInheritance NoClassInheritance);
     public void visit(ClassInheritance ClassInheritance);
+    public void visit(ClassName ClassName);
     public void visit(ClassDecl ClassDecl);
     public void visit(NoArrayVariable NoArrayVariable);
     public void visit(ArrayVariable ArrayVariable);

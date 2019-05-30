@@ -63,12 +63,12 @@ non terminal Program, ProgramName, DeclarationsList, Decl, MethodDeclarationsLis
 non terminal ConstDecl, ConstSyntaxCheck, MultipleConstDecl, SingleConstDecl, SingleConstDeclSyntaxCheck, ConstName, ConstValue;
 non terminal EnumDecl, EnumSyntaxCheck, EnumName, MultipleEnumElemDecl, SingleEnumElemDecl, SingleEnumElemDeclSyntaxCheck, EnumValueOption;
 non terminal VarDecl, VarSyntaxCheck, MultipleVarDecl, SingleVarDeclSyntaxCheck, SingleVarDecl, ArrayOption;
-non terminal ClassDecl, ExtendsOption, ExtendsSyntaxCheck, ImplementsOption, ImplementsSyntaxCheck, InterfaceList, InterfaceImplemented;
+non terminal ClassDecl, ClassName, ExtendsOption, ExtendsSyntaxCheck, ImplementsOption, ImplementsSyntaxCheck, InterfaceList, InterfaceImplemented;
 non terminal ClassVarDeclList, ClassVarDeclSyntaxCheck, ClassVarDeclCheck, MultipleClassVarDecl, SingleClassVarDecl, ClassVarArrayOption;
-non terminal ClassMethodsOption, ClassMethodDeclarationsList, ClassMethodDecl, ClassMethodVarDeclList, ClassMethodVarDeclSyntaxCheck, ClassMethodVarDeclCheck, MultipleClassMethodVarDecl, SingleClassMethodVarDecl, ClassMethodVarArrayOption;
-non terminal InterfaceDecl, InterfaceSyntaxCheck, InterfaceMethodDeclarationList;
-non terminal InterfaceMethodDecl, ReturnType, FormParsOption;
-non terminal MethodDecl, MethodVarDeclList, MethodVarDeclSyntaxCheck, MethodVarDeclCheck, MultipleMethodVarDecl, SingleMethodVarDecl, MethodVarArrayOption, StatementList;
+non terminal ClassMethodsOption, ClassMethodDeclarationsList, ClassMethodDecl, ClassMethodName, ClassMethodVarDeclList, ClassMethodVarDeclSyntaxCheck, ClassMethodVarDeclCheck, MultipleClassMethodVarDecl, SingleClassMethodVarDecl, ClassMethodVarName, ClassMethodVarArrayOption;
+non terminal InterfaceDecl, InterfaceName, InterfaceSyntaxCheck, InterfaceMethodDeclarationList;
+non terminal InterfaceMethodDecl, InterfaceMethodName, ReturnType, FormParsOption;
+non terminal MethodDecl, MethodName, MethodVarDeclList, MethodVarDeclSyntaxCheck, MethodVarDeclCheck, MultipleMethodVarDecl, SingleMethodVarDecl, MethodVarArrayOption, StatementList;
 non terminal Type;
 non terminal FormPars, SingleFormPar, FormParArrayOption;
 non terminal Statement, MatchedStatement, UnmatchedStatement, MatchedDesignatorStatement, ConditionSyntaxCheck, FirstForDesignatorOption, ForConditionOption, SecondForDesignatorOption, ReturnExprOption, PrintOption;
@@ -114,7 +114,7 @@ ConstDecl ::= (ConstDecl) CONST ConstSyntaxCheck SEMICOLON ;
 ConstSyntaxCheck ::= (ConstDeclSuccess) Type:constType MultipleConstDecl
                      |
                      (ConstDeclError) error:e 
-                     {: parser.report_error("1Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :}  ;
+                     {: parser.report_error("Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :}  ;
 
 MultipleConstDecl ::= (MultipleConstDeclaration) MultipleConstDecl COMMA SingleConstDecl
                       |
@@ -125,7 +125,7 @@ SingleConstDecl ::= (SingleConstDecl) SingleConstDeclSyntaxCheck;
 SingleConstDeclSyntaxCheck ::= (SingleConstDeclSuccess) ConstName:constName ASSIGN ConstValue:constValue
                                |
                                (SingleConstDeclError) error:e
-                               {: parser.report_error("2Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :} ;
+                               {: parser.report_error("Syntax Error on line " + eleft + "; error in constant declaration", null); parser.syntaxErrorFound = true; :} ;
 
 ConstName ::= (ConstName) IDENT:constName ;
 
@@ -180,7 +180,9 @@ ArrayOption ::= (ArrayVariable) LEFT_BRACKET RIGHT_BRACKET
                 |
                 (NoArrayVariable) /* epsilon */ ;
                 
-ClassDecl ::= (ClassDecl) CLASS IDENT:className ExtendsOption ImplementsOption LEFT_BRACE ClassVarDeclList ClassMethodsOption RIGHT_BRACE ;
+ClassDecl ::= (ClassDecl) CLASS ClassName ExtendsOption ImplementsOption LEFT_BRACE ClassVarDeclList ClassMethodsOption RIGHT_BRACE ;
+
+ClassName ::= (ClassName) IDENT:className;
 
 ExtendsOption ::= (ClassInheritance) ExtendsSyntaxCheck
                   |
@@ -240,20 +242,28 @@ ClassMethodDeclarationsList ::= (ClassMethodsDeclarations) ClassMethodDeclaratio
 
 InterfaceDecl ::= (InterfaceDecl) INTERFACE InterfaceSyntaxCheck RIGHT_BRACE ;         
 
-InterfaceSyntaxCheck ::= (InterfaceDeclSuccess) IDENT:interfaceName LEFT_BRACE InterfaceMethodDeclarationList
+InterfaceSyntaxCheck ::= (InterfaceDeclSuccess) InterfaceName LEFT_BRACE InterfaceMethodDeclarationList
                          |
                          (InterfaceDeclError) error:e
-                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in interface declaration", null); parser.syntaxErrorFound = true; :} ;        
+                         {: parser.report_error("4Syntax Error on line " + eleft + "; error in interface declaration", null); parser.syntaxErrorFound = true; :} ;     
+                         
+InterfaceName ::= (InterfaceName) IDENT:interfaceName;   
                          
 InterfaceMethodDeclarationList ::= (InterfaceMethods) InterfaceMethodDeclarationList InterfaceMethodDecl
                                    |
                                    (NoInterfaceMethods) /* epsilon */ ;   
                                    
-InterfaceMethodDecl ::= (InterfaceMethodDecl) ReturnType IDENT:interfaceMethodName LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS SEMICOLON ;
+InterfaceMethodDecl ::= (InterfaceMethodDecl) ReturnType InterfaceMethodName LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS SEMICOLON ;
 
-MethodDecl ::= (MethodDecl) ReturnType IDENT:methodName LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS MethodVarDeclList LEFT_BRACE StatementList RIGHT_BRACE ;
+InterfaceMethodName ::= (InterfaceMethodName) IDENT:interfaceMethodName;
 
-ClassMethodDecl ::= (ClassMethodDecl) ReturnType IDENT:methodName LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS ClassMethodVarDeclList LEFT_BRACE StatementList RIGHT_BRACE ;
+MethodDecl ::= (MethodDecl) ReturnType MethodName LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS MethodVarDeclList LEFT_BRACE StatementList RIGHT_BRACE ;
+
+MethodName ::= (MethodName) IDENT:methodName;
+
+ClassMethodDecl ::= (ClassMethodDecl) ReturnType ClassMethodName LEFT_PARENTHESIS FormParsOption RIGHT_PARENTHESIS ClassMethodVarDeclList LEFT_BRACE StatementList RIGHT_BRACE ;
+
+ClassMethodName ::= (ClassMethodName) IDENT:classMethodName; 
 
 MethodVarDeclList ::= (MethodVarDeclarations) MethodVarDeclList MethodVarDeclSyntaxCheck
                       |
@@ -299,9 +309,11 @@ MultipleClassMethodVarDecl ::= (MultipleClassMethodVariableDeclarations) Multipl
                           
 SingleClassMethodVarDecl ::= (SingleClassMethodVarDecl) IDENT:classMethodVarName ClassMethodVarArrayOption ;
 
+ClassMethodVarName ::= (ClassMethodVarName) IDENT:classMethodVarName;
+
 ClassMethodVarArrayOption ::= (ClassMethodArrayVariable) LEFT_BRACKET RIGHT_BRACKET
                               |
-                              (ClassNoMethodArrayVariable) /* epsilon */ ;
+                              (ClassMethodNoArrayVariable) /* epsilon */ ;
 
 ReturnType ::= (NoVoidReturn) Type
                |

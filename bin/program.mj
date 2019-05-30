@@ -1,12 +1,66 @@
 program prog 
 
-class klasa {
+const int a = 'a';
+
+char c;
+
+enum en {en0, en3 = 3, 
+
+en4, en6 = 6}
+
+enum en1 {enn0, enn1}
+
+interface Interfejs {
+	void metod1 (int a);
+	void metod2 ();
+	int metod3 ();
+	Klasa metod4 ();
+	char metod5 ();
+}
+
+interface Interfejs2 {
+	void metod2 ();
+	int metod5 ();
+}
+
+Interfejs i1;
+
+class Super implements Interfejs, Interfejs, Interfejs2 {
 	{
-		void metod1 () int a; {
-		    a =+ 4;
+		void metod4(int a1, int a2, int a3) {
+		}
+		
+		void metod1 () {
+		}
+		
+		int metod2 () {
+		}
+		
+		char metod5 () {
 		}
 	}
 }
+class Klasa extends Super {
+	int a;
+	char c;
+	char cc[];
+	
+	{
+		int metod4 () int a; char c; {
+		}
+	}
+}
+class Pogresna extends Interfejs implements Super {
+}
+
+Super s;
+Klasa k;
+
+const int a = 2;
+
 {
+	void metod1 (char c, bool d, bool c) int a; char a; {}
+	
+	void main () {}
 	
 }

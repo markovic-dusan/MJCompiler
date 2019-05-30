@@ -1,22 +1,23 @@
 // generated with ast extension for cup
 // version 0.8
-// 13/4/2019 15:44:20
+// 30/4/2019 19:15:39
 
 
-package src.rs.ac.bg.etf.pp1.ast;
+package rs.ac.bg.etf.pp1.ast;
 
 public class InterfaceMethodDecl implements SyntaxNode {
 
     private SyntaxNode parent;
     private int line;
     private ReturnType ReturnType;
-    private String interfaceMethodName;
+    private InterfaceMethodName InterfaceMethodName;
     private FormParsOption FormParsOption;
 
-    public InterfaceMethodDecl (ReturnType ReturnType, String interfaceMethodName, FormParsOption FormParsOption) {
+    public InterfaceMethodDecl (ReturnType ReturnType, InterfaceMethodName InterfaceMethodName, FormParsOption FormParsOption) {
         this.ReturnType=ReturnType;
         if(ReturnType!=null) ReturnType.setParent(this);
-        this.interfaceMethodName=interfaceMethodName;
+        this.InterfaceMethodName=InterfaceMethodName;
+        if(InterfaceMethodName!=null) InterfaceMethodName.setParent(this);
         this.FormParsOption=FormParsOption;
         if(FormParsOption!=null) FormParsOption.setParent(this);
     }
@@ -29,12 +30,12 @@ public class InterfaceMethodDecl implements SyntaxNode {
         this.ReturnType=ReturnType;
     }
 
-    public String getInterfaceMethodName() {
-        return interfaceMethodName;
+    public InterfaceMethodName getInterfaceMethodName() {
+        return InterfaceMethodName;
     }
 
-    public void setInterfaceMethodName(String interfaceMethodName) {
-        this.interfaceMethodName=interfaceMethodName;
+    public void setInterfaceMethodName(InterfaceMethodName InterfaceMethodName) {
+        this.InterfaceMethodName=InterfaceMethodName;
     }
 
     public FormParsOption getFormParsOption() {
@@ -67,17 +68,20 @@ public class InterfaceMethodDecl implements SyntaxNode {
 
     public void childrenAccept(Visitor visitor) {
         if(ReturnType!=null) ReturnType.accept(visitor);
+        if(InterfaceMethodName!=null) InterfaceMethodName.accept(visitor);
         if(FormParsOption!=null) FormParsOption.accept(visitor);
     }
 
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(ReturnType!=null) ReturnType.traverseTopDown(visitor);
+        if(InterfaceMethodName!=null) InterfaceMethodName.traverseTopDown(visitor);
         if(FormParsOption!=null) FormParsOption.traverseTopDown(visitor);
     }
 
     public void traverseBottomUp(Visitor visitor) {
         if(ReturnType!=null) ReturnType.traverseBottomUp(visitor);
+        if(InterfaceMethodName!=null) InterfaceMethodName.traverseBottomUp(visitor);
         if(FormParsOption!=null) FormParsOption.traverseBottomUp(visitor);
         accept(visitor);
     }
@@ -93,7 +97,10 @@ public class InterfaceMethodDecl implements SyntaxNode {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
-        buffer.append(" "+tab+interfaceMethodName);
+        if(InterfaceMethodName!=null)
+            buffer.append(InterfaceMethodName.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
         buffer.append("\n");
 
         if(FormParsOption!=null)

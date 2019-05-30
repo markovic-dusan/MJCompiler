@@ -1,24 +1,24 @@
 // generated with ast extension for cup
 // version 0.8
-// 13/4/2019 15:44:20
+// 30/4/2019 19:15:39
 
 
-package src.rs.ac.bg.etf.pp1.ast;
+package rs.ac.bg.etf.pp1.ast;
 
 public class PrintArg extends PrintOption {
 
-    private Integer number;
+    private Integer N1;
 
-    public PrintArg (Integer number) {
-        this.number=number;
+    public PrintArg (Integer N1) {
+        this.N1=N1;
     }
 
-    public Integer getNumber() {
-        return number;
+    public Integer getN1() {
+        return N1;
     }
 
-    public void setNumber(Integer number) {
-        this.number=number;
+    public void setN1(Integer N1) {
+        this.N1=N1;
     }
 
     public void accept(Visitor visitor) {
@@ -41,7 +41,7 @@ public class PrintArg extends PrintOption {
         buffer.append(tab);
         buffer.append("PrintArg(\n");
 
-        buffer.append(" "+tab+number);
+        buffer.append(" "+tab+N1);
         buffer.append("\n");
 
         buffer.append(tab);

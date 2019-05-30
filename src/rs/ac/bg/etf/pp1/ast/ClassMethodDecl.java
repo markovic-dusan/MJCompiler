@@ -1,24 +1,25 @@
 // generated with ast extension for cup
 // version 0.8
-// 13/4/2019 15:44:20
+// 30/4/2019 19:15:39
 
 
-package src.rs.ac.bg.etf.pp1.ast;
+package rs.ac.bg.etf.pp1.ast;
 
 public class ClassMethodDecl implements SyntaxNode {
 
     private SyntaxNode parent;
     private int line;
     private ReturnType ReturnType;
-    private String methodName;
+    private ClassMethodName ClassMethodName;
     private FormParsOption FormParsOption;
     private ClassMethodVarDeclList ClassMethodVarDeclList;
     private StatementList StatementList;
 
-    public ClassMethodDecl (ReturnType ReturnType, String methodName, FormParsOption FormParsOption, ClassMethodVarDeclList ClassMethodVarDeclList, StatementList StatementList) {
+    public ClassMethodDecl (ReturnType ReturnType, ClassMethodName ClassMethodName, FormParsOption FormParsOption, ClassMethodVarDeclList ClassMethodVarDeclList, StatementList StatementList) {
         this.ReturnType=ReturnType;
         if(ReturnType!=null) ReturnType.setParent(this);
-        this.methodName=methodName;
+        this.ClassMethodName=ClassMethodName;
+        if(ClassMethodName!=null) ClassMethodName.setParent(this);
         this.FormParsOption=FormParsOption;
         if(FormParsOption!=null) FormParsOption.setParent(this);
         this.ClassMethodVarDeclList=ClassMethodVarDeclList;
@@ -35,12 +36,12 @@ public class ClassMethodDecl implements SyntaxNode {
         this.ReturnType=ReturnType;
     }
 
-    public String getMethodName() {
-        return methodName;
+    public ClassMethodName getClassMethodName() {
+        return ClassMethodName;
     }
 
-    public void setMethodName(String methodName) {
-        this.methodName=methodName;
+    public void setClassMethodName(ClassMethodName ClassMethodName) {
+        this.ClassMethodName=ClassMethodName;
     }
 
     public FormParsOption getFormParsOption() {
@@ -89,6 +90,7 @@ public class ClassMethodDecl implements SyntaxNode {
 
     public void childrenAccept(Visitor visitor) {
         if(ReturnType!=null) ReturnType.accept(visitor);
+        if(ClassMethodName!=null) ClassMethodName.accept(visitor);
         if(FormParsOption!=null) FormParsOption.accept(visitor);
         if(ClassMethodVarDeclList!=null) ClassMethodVarDeclList.accept(visitor);
         if(StatementList!=null) StatementList.accept(visitor);
@@ -97,6 +99,7 @@ public class ClassMethodDecl implements SyntaxNode {
     public void traverseTopDown(Visitor visitor) {
         accept(visitor);
         if(ReturnType!=null) ReturnType.traverseTopDown(visitor);
+        if(ClassMethodName!=null) ClassMethodName.traverseTopDown(visitor);
         if(FormParsOption!=null) FormParsOption.traverseTopDown(visitor);
         if(ClassMethodVarDeclList!=null) ClassMethodVarDeclList.traverseTopDown(visitor);
         if(StatementList!=null) StatementList.traverseTopDown(visitor);
@@ -104,6 +107,7 @@ public class ClassMethodDecl implements SyntaxNode {
 
     public void traverseBottomUp(Visitor visitor) {
         if(ReturnType!=null) ReturnType.traverseBottomUp(visitor);
+        if(ClassMethodName!=null) ClassMethodName.traverseBottomUp(visitor);
         if(FormParsOption!=null) FormParsOption.traverseBottomUp(visitor);
         if(ClassMethodVarDeclList!=null) ClassMethodVarDeclList.traverseBottomUp(visitor);
         if(StatementList!=null) StatementList.traverseBottomUp(visitor);
@@ -121,7 +125,10 @@ public class ClassMethodDecl implements SyntaxNode {
             buffer.append(tab+"  null");
         buffer.append("\n");
 
-        buffer.append(" "+tab+methodName);
+        if(ClassMethodName!=null)
+            buffer.append(ClassMethodName.toString("  "+tab));
+        else
+            buffer.append(tab+"  null");
         buffer.append("\n");
 
         if(FormParsOption!=null)
